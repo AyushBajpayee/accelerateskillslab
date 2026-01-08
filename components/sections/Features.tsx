@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { motion } from "framer-motion";
+import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
+import { motion } from "motion/react";
 import { BarChart3, Brain, Globe, Shield, Users, Zap } from "lucide-react";
 
 const features = [
@@ -47,43 +47,36 @@ export function Features() {
     return (
         <section id="features" className="py-20 bg-background">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center max-w-3xl mx-auto mb-16">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="text-center max-w-3xl mx-auto mb-16"
+                >
                     <h2 className="text-3xl md:text-5xl font-bold mb-6">
                         Unlock potential with <span className="text-primary">Data & AI</span>.
                     </h2>
                     <p className="text-muted-foreground text-lg">
                         Master the tools and technologies driving the future of innovation.
                     </p>
-                </div>
+                </motion.div>
 
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <BentoGrid className="max-w-7xl mx-auto">
                     {features.map((feature, index) => (
-                        <motion.div
+                        <BentoGridItem
                             key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: index * 0.1 }}
+                            title={feature.title}
+                            description={feature.description}
+                            icon={
+                                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                                    <feature.icon size={20} />
+                                </div>
+                            }
                             className={feature.className}
-                        >
-                            <Card className="h-full bg-muted/30 border-muted hover:border-primary hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
-                                <CardHeader>
-                                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 text-primary">
-                                        <feature.icon size={24} />
-                                    </div>
-                                    <CardTitle className="text-xl">{feature.title}</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <CardDescription className="text-base">
-                                        {feature.description}
-                                    </CardDescription>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
+                        />
                     ))}
-                </div>
+                </BentoGrid>
             </div>
-        </section >
+        </section>
     );
 }

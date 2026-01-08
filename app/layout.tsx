@@ -8,8 +8,8 @@ import { Analytics } from "@vercel/analytics/next";
 const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Accelerate Skills Lab - Future of Learning",
-  description: "Unlock learning with expert-led courses and AI-driven platforms.",
+  title: "Accelerate Skills Lab - The Data & AI Fast-Track",
+  description: "Whether you want to build data products, become a data engineer, or lead AI at your company - we have the training, coaching, and community to get you there.",
 };
 
 export default function RootLayout({
@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className={outfit.className}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

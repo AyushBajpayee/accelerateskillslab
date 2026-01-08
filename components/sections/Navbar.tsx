@@ -31,7 +31,7 @@ export function Navbar() {
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
                 isScrolled
-                    ? "bg-background/80 backdrop-blur-md border-b shadow-sm"
+                    ? "bg-background/80 backdrop-blur-md border-b border-white/10 shadow-sm"
                     : "bg-transparent"
             )}
         >
@@ -55,7 +55,8 @@ export function Navbar() {
                                 {item.name}
                             </Link>
                         ))}
-                        <Button>Get Started</Button>
+                        <ThemeToggle />
+                        <Button>Find Your Program</Button>
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -84,8 +85,9 @@ export function Navbar() {
                                 {item.name}
                             </Link>
                         ))}
-                        <div className="pt-4">
-                            <Button className="w-full">Get Started</Button>
+                        <div className="pt-4 space-y-2">
+                            <ThemeToggle />
+                            <Button className="w-full">Find Your Program</Button>
                         </div>
                     </div>
                 </div>
