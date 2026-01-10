@@ -3,6 +3,7 @@
 import { Button as MovingBorderButton } from "@/components/ui/moving-border";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Spotlight } from "@/components/ui/spotlight";
+import { LampEffect } from "@/components/ui/lamp-effect";
 import { motion } from "motion/react";
 import { ArrowRight, CheckCircle, Play, Star } from "lucide-react";
 import Image from "next/image";
@@ -16,9 +17,13 @@ export function Hero() {
                 fill="#2756f7"
             />
             <BackgroundBeams className="opacity-60" />
-
-            {/* Grid overlay for technical aesthetic */}
-            <div className="absolute inset-0 [background-size:40px_40px] [background-image:linear-gradient(to_right,#e4e4e7_1px,transparent_1px),linear-gradient(to_bottom,#e4e4e7_1px,transparent_1px)] dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)] opacity-30" />
+            
+            {/* Sun Lamp Effect - positioned at bottom center */}
+            <LampEffect 
+                className="opacity-80"
+                fill="#2756f7"
+                position="bottom"
+            />
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="flex flex-col items-center">
@@ -34,20 +39,21 @@ export function Hero() {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                             </span>
-                            AI-Powered Data Skills Platform
+                            3-Month Intensive Bootcamps
                         </div>
 
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
-                            The Data & AI fast-track to{" "}
-                            <span className="text-primary">accelerate your career</span>
+                            <span className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl">Transform from beginner to professional with our</span>
+                            <br />
+                            <span className="text-primary">Zero-to-Hero bootcamp</span>
                         </h1>
 
                         <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
-                            Whether you want to build data products, become a data engineer, or lead AI at your company - we have the training, coaching, and community to get you there.
+                            Our intensive bootcamp takes you from complete beginner to job-ready professional. Master dashboards and visualization tools, or build production-grade pipelines and cloud infrastructure.
                         </p>
 
                         {/* Social Proof Badge with 5-Star Rating */}
-                        <motion.div
+                        {/* <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.4, delay: 0.3 }}
@@ -79,7 +85,7 @@ export function Hero() {
                                     </p>
                                 </div>
                             </div>
-                        </motion.div>
+                        </motion.div> */}
 
                         {/* CTA Button */}
                         <motion.div
@@ -88,15 +94,17 @@ export function Hero() {
                             transition={{ duration: 0.4, delay: 0.4 }}
                             className="flex flex-col sm:flex-row gap-4 justify-center"
                         >
-                            <MovingBorderButton
-                                borderRadius="1.75rem"
-                                duration={2000}
-                                className="h-14 px-10 text-lg bg-gradient-to-b from-[#2756f7] to-[#4a74ff] text-white"
-                                borderClassName="bg-[radial-gradient(var(--primary)_40%,transparent_60%)]"
-                            >
-                                Find Your Program
-                                <ArrowRight size={20} className="ml-2" />
-                            </MovingBorderButton>
+                            <a href="#courses">
+                                <MovingBorderButton
+                                    borderRadius="1.75rem"
+                                    duration={2000}
+                                    className="h-14 px-10 text-lg bg-gradient-to-b from-[#2756f7] to-[#4a74ff] text-white"
+                                    borderClassName="bg-[radial-gradient(var(--primary)_40%,transparent_60%)]"
+                                >
+                                    Find Your Program
+                                    <ArrowRight size={20} className="ml-2" />
+                                </MovingBorderButton>
+                            </a>
 
                         </motion.div>
                     </motion.div>
