@@ -36,18 +36,19 @@ export function Navbar() {
 
           {/* Right Side - Button */}
           <div className="flex items-center gap-4">
-            <HoverBorderGradient
-              containerClassName="rounded-full hover:border-primary transition-colors duration-200"
-              as="a"
-              href="#courses"
-              className="px-6 py-2.5 text-sm font-medium text-white flex items-center justify-center"
-              innerStyle={{
-                background:
-                  "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
-              }}
-            >
-              Find Your Program
-            </HoverBorderGradient>
+            <Link href="/#courses" className="inline-block">
+              <HoverBorderGradient
+                containerClassName="rounded-full hover:border-primary transition-colors duration-200"
+                as="div"
+                className="px-6 py-2.5 text-sm font-medium text-white flex items-center justify-center"
+                innerStyle={{
+                  background:
+                    "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
+                }}
+              >
+                Find Your Program
+              </HoverBorderGradient>
+            </Link>
           </div>
         </div>
       </div>
