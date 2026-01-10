@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { BookOpen, Code, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 const courses = [
   {
@@ -112,14 +113,18 @@ export function Courses() {
                   </p>
 
                   {/* CTA Button */}
-                  <Link href={course.link}>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`${course.buttonColor} text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200`}
+                  <Link href={course.link} className="inline-block">
+                    <HoverBorderGradient
+                      containerClassName="rounded-full hover:border-primary transition-colors duration-200"
+                      as="div"
+                      className="px-6 py-3 text-base font-medium text-white flex items-center justify-center"
+                      innerStyle={{
+                        background:
+                          "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
+                      }}
                     >
                       {course.buttonText}
-                    </motion.button>
+                    </HoverBorderGradient>
                   </Link>
                 </motion.div>
               );

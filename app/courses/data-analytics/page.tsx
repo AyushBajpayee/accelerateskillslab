@@ -1,6 +1,6 @@
 "use client";
 
-import { Button as MovingBorderButton } from "@/components/ui/moving-border";
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Spotlight } from "@/components/ui/spotlight";
 import { LampEffect } from "@/components/ui/lamp-effect";
@@ -152,13 +152,7 @@ function ModuleCard({
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div
-      //   initial={{ opacity: 0, y: 20 }}
-      //   whileInView={{ opacity: 1, y: 0 }}
-      //   viewport={{ once: true }}
-      //   transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="bg-[#111827] rounded-2xl p-6 sm:p-8 border border-blue-500/30 hover:border-blue-500/50 transition-colors"
-    >
+    <div className="bg-[#111827] rounded-2xl p-6 sm:p-8 border border-blue-500/30 hover:border-blue-500/50 transition-colors">
       <div className="flex flex-col gap-4">
         {/* Week Badge and Header */}
         <div className="flex items-start justify-between gap-4">
@@ -303,17 +297,15 @@ export default function DataAnalyticsPage() {
                   transition={{ duration: 0.4, delay: 0.4 }}
                   className="flex flex-col sm:flex-row gap-4 justify-center"
                 >
-                  <a href="#course-details">
-                    <MovingBorderButton
-                      borderRadius="1.75rem"
-                      duration={2000}
-                      className="h-14 px-10 text-lg bg-gradient-to-b from-[#2756f7] to-[#4a74ff] text-white"
-                      borderClassName="bg-[radial-gradient(var(--primary)_40%,transparent_60%)]"
-                    >
-                      Curriculum
-                      <ArrowRight size={20} className="ml-2" />
-                    </MovingBorderButton>
-                  </a>
+                  <HoverBorderGradient
+                    containerClassName="rounded-full"
+                    as="a"
+                    href="#course-details"
+                    className="h-14 px-10 text-lg dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
+                  >
+                    <span>Curriculum</span>
+                    <ArrowRight size={20} />
+                  </HoverBorderGradient>
                 </motion.div>
               </motion.div>
             </div>
