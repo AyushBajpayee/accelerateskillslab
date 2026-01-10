@@ -3,7 +3,6 @@
 import * as React from "react";
 import Link from "next/link";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
@@ -35,7 +34,7 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Right Side - Button & Theme Toggle */}
+          {/* Right Side - Button */}
           <div className="flex items-center gap-4">
             <HoverBorderGradient
               containerClassName="rounded-full hover:border-primary transition-colors duration-200"
@@ -49,7 +48,6 @@ export function Navbar() {
             >
               Find Your Program
             </HoverBorderGradient>
-            <ThemeToggle />
           </div>
         </div>
       </div>
