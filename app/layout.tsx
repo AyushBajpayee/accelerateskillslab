@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Outfit, IBM_Plex_Serif } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 
 import { Analytics } from "@vercel/analytics/next";
 
 const outfit = Outfit({ subsets: ["latin"] });
+const ibmPlexSerif = IBM_Plex_Serif({ 
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+    variable: "--font-ibm-plex-serif"
+});
 
 export const metadata: Metadata = {
   title: "Accelerate Skills Lab - The Data & AI Fast-Track",
@@ -19,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={outfit.className}>
+      <body className={`${outfit.className} ${ibmPlexSerif.variable}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
