@@ -164,7 +164,7 @@ function ModuleCard({
           </div>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-gray-400 hover:text-white transition-colors p-2 -mt-2 -mr-2"
+            className="text-gray-400 hover:text-white transition-colors p-2 -mt-2 -mr-2 cursor-pointer"
             aria-label={isExpanded ? "Collapse" : "Expand"}
           >
             <ChevronDown
