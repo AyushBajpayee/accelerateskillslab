@@ -57,7 +57,7 @@ export function Navbar() {
               <HoverBorderGradient
                 containerClassName="rounded-full hover:border-primary transition-colors duration-200"
                 as="div"
-                className="px-6 py-2.5 text-sm font-medium text-white flex items-center justify-center"
+                className="px-4 py-2 sm:px-6 sm:py-2.5 text-xs sm:text-sm font-medium text-white flex items-center justify-center"
                 innerStyle={{
                   background:
                     "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",

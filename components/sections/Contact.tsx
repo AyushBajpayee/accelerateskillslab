@@ -32,12 +32,13 @@ const formSchema = z.object({
     .trim(),
   phone: z
     .string()
-    .optional()
+    .min(1, "Phone number is required")
+    .trim()
     .refine(
-      (val) => !val || /^[\d\s\-\+\(\)]+$/.test(val),
+      (val) => /^[\d\s\-\+\(\)]+$/.test(val),
       "Please enter a valid phone number"
     ),
-  course: z.enum(["data-analytics", "data-engineering"], {
+  course: z.enum(["data-analytics", "data-engineering", "all"], {
     required_error: "Please select a course",
   }),
   message: z
@@ -170,12 +171,20 @@ export function Contact() {
         throw new Error("Web3Forms access key is not configured");
       }
 
+      // Format course value for better readability
+      const courseDisplay =
+        data.course === "all"
+          ? "All Courses (Data Analytics & Data Engineering)"
+          : data.course === "data-analytics"
+          ? "Data Analytics: Zero to Hero"
+          : "Data Engineering Zero to Hero";
+
       const formData = {
         access_key: accessKey,
         name: data.name.trim(),
         email: data.email.trim().toLowerCase(),
-        phone: data.phone?.trim() || "",
-        course: data.course,
+        phone: data.phone,
+        course: courseDisplay,
         message: data.message?.trim() || "",
         subject: "New Contact Form Submission from Accelerate Skills Lab",
         from_name: data.name.trim(),
@@ -378,7 +387,7 @@ export function Contact() {
                       <Input
                         id="name"
                         type="text"
-                        placeholder="John Doe"
+                        placeholder="Enter your full name"
                         {...register("name")}
                         aria-invalid={errors.name ? "true" : "false"}
                         aria-describedby={
@@ -411,7 +420,7 @@ export function Contact() {
                       <Input
                         id="email"
                         type="email"
-                        placeholder="john@example.com"
+                        placeholder="Enter your email address"
                         {...register("email")}
                         aria-invalid={errors.email ? "true" : "false"}
                         aria-describedby={
@@ -441,13 +450,12 @@ export function Contact() {
                       htmlFor="phone"
                       className="text-sm font-medium text-gray-300"
                     >
-                      Phone{" "}
-                      <span className="text-gray-500 text-xs">(optional)</span>
+                      Phone <span className="text-red-400">*</span>
                     </label>
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="+91 98765 43210"
+                      placeholder="Enter your phone number"
                       {...register("phone")}
                       aria-invalid={errors.phone ? "true" : "false"}
                       aria-describedby={
@@ -492,6 +500,7 @@ export function Contact() {
                       }
                     >
                       <option value="">Select a course</option>
+                      <option value="all">All Courses</option>
                       <option value="data-analytics">
                         Data Analytics: Zero to Hero
                       </option>
@@ -521,7 +530,7 @@ export function Contact() {
                     </label>
                     <Textarea
                       id="message"
-                      placeholder="Tell us about your goals and we'll help you choose the right bootcamp program."
+                      placeholder="Enter your message (optional)"
                       className={`min-h-[100px] ${
                         errors.message
                           ? "border-red-500 focus-visible:ring-red-500/50"
