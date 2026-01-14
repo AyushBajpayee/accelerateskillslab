@@ -295,7 +295,7 @@ export default function DataAnalyticsPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.4 }}
-                  className="flex flex-col sm:flex-row gap-4 justify-center"
+                  className="flex justify-center"
                 >
                   <HoverBorderGradient
                     containerClassName="rounded-full"
