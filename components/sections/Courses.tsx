@@ -65,7 +65,7 @@ export function Courses() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="relative mx-auto w-full max-w-[1200px] rounded-[32px] border border-[#ffffff12] bg-[#0d1117] p-6 overflow-visible"
+          className="relative p-4 sm:p-6 mx-auto w-full max-w-[1200px] rounded-[32px] border border-[#ffffff12] bg-[#0d1117] overflow-visible"
         >
           {/* Blue Highlighter Glow - Bottom */}
           <div
@@ -78,7 +78,7 @@ export function Courses() {
           />
 
           {/* Course Cards - Vertical Stack */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4 sm:gap-6">
             {courses.map((course, index) => {
               const IconComponent = course.categoryIcon;
               return (
@@ -88,7 +88,7 @@ export function Courses() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
-                  className="bg-[#111827] rounded-2xl p-8 border border-white/5"
+                  className="bg-[#111827] rounded-2xl p-5 sm:p-8 border border-white/5"
                 >
                   {/* Category Label */}
                   <div className="flex items-center gap-2 mb-4">
