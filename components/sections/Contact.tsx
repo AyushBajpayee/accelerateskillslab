@@ -11,10 +11,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-
-// Constants
-const COOLDOWN_MS = 90 * 1000; // 90 seconds
-const STORAGE_KEY = "contactFormLastSubmit";
+import { countryCodes, defaultCountryCode } from "@/lib/country-codes";
 
 // Zod validation schema
 const formSchema = z.object({
@@ -30,75 +27,25 @@ const formSchema = z.object({
     .email("Please enter a valid email address")
     .toLowerCase()
     .trim(),
-  phone: z
+  countryCode: z.string().min(1, "Country code is required"),
+  phoneNumber: z
     .string()
     .min(1, "Phone number is required")
     .trim()
     .refine(
-      (val) => /^[\d\s\-\+\(\)]+$/.test(val),
-      "Please enter a valid phone number"
+      (val) => /^\d{10}$/.test(val.replace(/\D/g, "")),
+      "Please enter a 10-digit phone number",
     ),
   course: z.enum(["data-analytics", "data-engineering", "all"], {
     required_error: "Please select a course",
   }),
   message: z
     .string()
-    .optional()
-    .refine((val) => {
-      if (!val || val.trim().length === 0) return true; // Empty is allowed
-      return val.trim().length >= 10; // If provided, must be at least 10 chars
-    }, "Message must be at least 10 characters")
-    .refine(
-      (val) => !val || val.trim().length <= 1000,
-      "Message must be less than 1000 characters"
-    ),
+    .max(1000, "Message must be less than 1000 characters")
+    .optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
-
-// Helper function to check cooldown
-const checkCooldown = (): { allowed: boolean; remainingMs?: number } => {
-  try {
-    const lastSubmit = localStorage.getItem(STORAGE_KEY);
-    if (!lastSubmit) {
-      return { allowed: true };
-    }
-
-    const lastSubmitTime = parseInt(lastSubmit, 10);
-    if (isNaN(lastSubmitTime)) {
-      localStorage.removeItem(STORAGE_KEY);
-      return { allowed: true };
-    }
-
-    const elapsed = Date.now() - lastSubmitTime;
-    if (elapsed >= COOLDOWN_MS) {
-      return { allowed: true };
-    }
-
-    return { allowed: false, remainingMs: COOLDOWN_MS - elapsed };
-  } catch (error) {
-    // localStorage unavailable - graceful degradation
-    return { allowed: true };
-  }
-};
-
-// Helper function to format remaining time (rough estimate)
-const formatRemainingTime = (ms: number): string => {
-  const totalMinutes = ms / 60000;
-  const minutes = Math.floor(totalMinutes);
-
-  if (minutes >= 1) {
-    // Round to nearest minute for rough estimate
-    const roundedMinutes = Math.round(totalMinutes);
-    if (roundedMinutes === 1) {
-      return "about a minute";
-    }
-    return `about ${roundedMinutes} minutes`;
-  }
-
-  // Less than a minute
-  return "less than a minute";
-};
 
 export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -116,12 +63,15 @@ export function Contact() {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    mode: "onChange",
     defaultValues: {
       name: "",
       email: "",
-      phone: "",
+      countryCode: defaultCountryCode,
+      phoneNumber: "",
       course: undefined,
       message: "",
     },
@@ -154,16 +104,9 @@ export function Contact() {
       return;
     }
 
-    // Check cooldown
-    const cooldown = checkCooldown();
-    if (!cooldown.allowed) {
-      return; // Button is disabled, but return early as safety
-    }
-
     setIsSubmitting(true);
     setSubmitStatus("idle");
     setErrorMessage("");
-    // Don't clear cooldown message here - it will be cleared by the interval or on next successful submit
 
     try {
       const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
@@ -176,14 +119,17 @@ export function Contact() {
         data.course === "all"
           ? "All Courses (Data Analytics & Data Engineering)"
           : data.course === "data-analytics"
-          ? "Data Analytics: Zero to Hero"
-          : "Data Engineering Zero to Hero";
+            ? "Data Analytics: Zero to Hero"
+            : "Data Engineering Zero to Hero";
+
+      // Combine country code and phone number
+      const fullPhoneNumber = `${data.countryCode} ${data.phoneNumber}`;
 
       const formData = {
         access_key: accessKey,
         name: data.name.trim(),
         email: data.email.trim().toLowerCase(),
-        phone: data.phone,
+        phone: fullPhoneNumber,
         course: courseDisplay,
         message: data.message?.trim() || "",
         subject: "New Contact Form Submission from Accelerate Skills Lab",
@@ -204,13 +150,6 @@ export function Contact() {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        // Store submission timestamp
-        try {
-          localStorage.setItem(STORAGE_KEY, Date.now().toString());
-        } catch (error) {
-          // localStorage unavailable - continue anyway
-        }
-
         setSubmitStatus("success");
         reset();
         setHoneypot("");
@@ -234,21 +173,18 @@ export function Contact() {
       if (error instanceof TypeError && error.message.includes("fetch")) {
         setSubmitStatus("error");
         setErrorMessage(
-          "Connection error. Please check your internet and try again."
+          "Connection error. Please check your internet and try again.",
         );
       } else {
         setSubmitStatus("error");
         setErrorMessage(
-          "Something went wrong. Please try again or email us directly."
+          "Something went wrong. Please try again or email us directly.",
         );
       }
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const cooldown = checkCooldown();
-  const isCooldownActive = !cooldown.allowed;
 
   return (
     <section id="contact" className="relative py-20 lg:py-32">
@@ -444,36 +380,83 @@ export function Contact() {
                     </div>
                   </div>
 
-                  {/* Phone Field */}
+                  {/* Phone Field - Unified Input with Country Code */}
                   <div className="space-y-2">
                     <label
-                      htmlFor="phone"
+                      htmlFor="phoneNumber"
                       className="text-sm font-medium text-gray-300"
                     >
                       Phone <span className="text-red-400">*</span>
                     </label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      placeholder="Enter your phone number"
-                      {...register("phone")}
-                      aria-invalid={errors.phone ? "true" : "false"}
-                      aria-describedby={
-                        errors.phone ? "phone-error" : undefined
-                      }
-                      className={
-                        errors.phone
-                          ? "border-red-500 focus-visible:ring-red-500/50"
-                          : ""
-                      }
-                    />
-                    {errors.phone && (
-                      <p
-                        id="phone-error"
-                        className="text-sm text-red-400 mt-1"
-                        role="alert"
-                      >
-                        {errors.phone.message}
+
+                    {/* Unified input container */}
+                    <div
+                      className={`flex items-center h-9 w-full rounded-md border bg-transparent shadow-xs transition-[color,box-shadow] dark:bg-input/30 focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px] ${
+                        errors.countryCode || errors.phoneNumber
+                          ? "border-red-500 ring-red-500/20"
+                          : "border-input"
+                      }`}
+                    >
+                      {/* Country Code Selector - custom display with native select */}
+                      <div className="relative h-full flex items-center rounded-l-md hover:bg-primary/10 transition-colors cursor-pointer">
+                        {/* Visible display showing only flag + code */}
+                        <span className="pl-3 pr-1 text-sm pointer-events-none">
+                          {(() => {
+                            const selectedCountry = countryCodes.find(
+                              (c) => c.dialCode === watch("countryCode"),
+                            );
+                            return selectedCountry
+                              ? `${selectedCountry.flag} ${selectedCountry.dialCode}`
+                              : "🇮🇳 +91";
+                          })()}
+                        </span>
+                        {/* Native select - invisible but functional */}
+                        <select
+                          id="countryCode"
+                          {...register("countryCode")}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          style={{ colorScheme: "dark" }}
+                        >
+                          {countryCodes.map((country) => (
+                            <option
+                              key={country.code}
+                              value={country.dialCode}
+                              className="bg-[#111827] text-white"
+                            >
+                              {country.flag} {country.dialCode} ({country.name})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Separator dot */}
+                      <span className="text-gray-500 px-1">•</span>
+
+                      {/* Phone Number Input - no border, blends into container */}
+                      <input
+                        id="phoneNumber"
+                        type="tel"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        placeholder="Enter 10-digit number"
+                        maxLength={10}
+                        {...register("phoneNumber", {
+                          onChange: (e) => {
+                            // Only allow digits
+                            e.target.value = e.target.value
+                              .replace(/\D/g, "")
+                              .slice(0, 10);
+                          },
+                        })}
+                        className="flex-1 h-full bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground pr-3"
+                      />
+                    </div>
+
+                    {/* Error messages */}
+                    {(errors.countryCode || errors.phoneNumber) && (
+                      <p className="text-sm text-red-400 mt-1" role="alert">
+                        {errors.countryCode?.message ||
+                          errors.phoneNumber?.message}
                       </p>
                     )}
                   </div>
@@ -531,6 +514,7 @@ export function Contact() {
                     <Textarea
                       id="message"
                       placeholder="Enter your message (optional)"
+                      maxLength={1001}
                       className={`min-h-[100px] ${
                         errors.message
                           ? "border-red-500 focus-visible:ring-red-500/50"
@@ -582,10 +566,7 @@ export function Contact() {
                     <Button
                       type="submit"
                       className="w-full h-12"
-                      disabled={isSubmitting || isCooldownActive}
-                      aria-describedby={
-                        isCooldownActive ? "cooldown-help" : undefined
-                      }
+                      disabled={isSubmitting}
                     >
                       {isSubmitting ? (
                         <>
@@ -600,22 +581,11 @@ export function Contact() {
                         "Send Message"
                       )}
                     </Button>
-                    {isCooldownActive && !isSubmitting && (
-                      <p
-                        id="cooldown-help"
-                        className="text-xs text-gray-400 text-center"
-                      >
-                        *Please wait for a while (90 seconds) before submitting
-                        again.
+                    {submitStatus === "error" && !isSubmitting && (
+                      <p className="text-xs text-gray-400 text-center">
+                        You can try submitting again or refresh the page
                       </p>
                     )}
-                    {submitStatus === "error" &&
-                      !isSubmitting &&
-                      !isCooldownActive && (
-                        <p className="text-xs text-gray-400 text-center">
-                          You can try submitting again or refresh the page
-                        </p>
-                      )}
                   </div>
                 </form>
               )}
