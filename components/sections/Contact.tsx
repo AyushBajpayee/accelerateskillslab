@@ -49,13 +49,15 @@ type FormData = z.infer<typeof formSchema>;
 
 export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [honeypot, setHoneypot] = useState("");
   const [hCaptchaToken, setHCaptchaToken] = useState<string>("");
-  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
+  const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
+  const [isCaptchaLoaded, setIsCaptchaLoaded] = useState<boolean>(false);
   const hCaptchaRef = useRef<HCaptcha>(null);
 
   const {
@@ -77,36 +79,43 @@ export function Contact() {
     },
   });
 
-  // Detect screen size for hCaptcha compact mode
+  // Execute hCaptcha challenge when captcha is loaded and form is submitted
   useEffect(() => {
-    const checkScreenSize = () => {
-      setIsSmallScreen(window.innerWidth < 640); // Tailwind sm breakpoint
-    };
-
-    // Check on mount
-    checkScreenSize();
-
-    // Listen for resize events
-    window.addEventListener("resize", checkScreenSize);
-
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
-
-  const onSubmit = async (data: FormData) => {
-    // Check honeypot (silent rejection for bots)
-    if (honeypot) {
-      return;
+    if (pendingFormData && isCaptchaLoaded && hCaptchaRef.current) {
+      // Call execute() to trigger challenge directly
+      const timer = setTimeout(async () => {
+        try {
+          if (hCaptchaRef.current) {
+            await hCaptchaRef.current.execute();
+          }
+        } catch (error) {
+          console.error("Error executing hCaptcha:", error);
+          setSubmitStatus("error");
+          setErrorMessage("Failed to load captcha. Please try again.");
+          setPendingFormData(null);
+          setIsVerifying(false);
+        }
+      }, 100);
+      
+      return () => clearTimeout(timer);
     }
+  }, [pendingFormData, isCaptchaLoaded]);
 
-    // Check hCaptcha
-    if (!hCaptchaToken) {
-      setErrorMessage("Please complete the captcha verification.");
-      return;
-    }
-
+  // Actual form submission function
+  const submitForm = async (data: FormData, token?: string) => {
     setIsSubmitting(true);
     setSubmitStatus("idle");
     setErrorMessage("");
+
+    // Use provided token or fall back to state token
+    const captchaToken = token || hCaptchaToken;
+
+    if (!captchaToken) {
+      setSubmitStatus("error");
+      setErrorMessage("Captcha verification is required. Please complete the captcha.");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
@@ -136,7 +145,7 @@ export function Contact() {
         from_name: data.name.trim(),
         page_url: typeof window !== "undefined" ? window.location.href : "",
         botcheck: honeypot,
-        "h-captcha-response": hCaptchaToken,
+        "h-captcha-response": captchaToken,
       };
 
       const response = await fetch("https://api.web3forms.com/submit", {
@@ -153,8 +162,11 @@ export function Contact() {
         setSubmitStatus("success");
         reset();
         setHoneypot("");
-        setHCaptchaToken(""); // Reset hCaptcha token
-        hCaptchaRef.current?.resetCaptcha(); // Reset hCaptcha widget
+        setHCaptchaToken("");
+        setPendingFormData(null);
+        setIsCaptchaLoaded(false);
+        setIsVerifying(false);
+        hCaptchaRef.current?.resetCaptcha();
 
         // Auto-dismiss success message after 5 seconds
         setTimeout(() => {
@@ -167,6 +179,10 @@ export function Contact() {
           "Something went wrong. Please try again or email us directly.";
         setSubmitStatus("error");
         setErrorMessage(errorMsg);
+        // Reset captcha on error to allow retry
+        setHCaptchaToken("");
+        setIsCaptchaLoaded(false); // Reset loaded state to allow re-execution
+        hCaptchaRef.current?.resetCaptcha();
       }
     } catch (error) {
       // Handle network errors
@@ -181,8 +197,43 @@ export function Contact() {
           "Something went wrong. Please try again or email us directly.",
         );
       }
+      // Reset captcha on error to allow retry
+      setHCaptchaToken("");
+      setIsCaptchaLoaded(false); // Reset loaded state to allow re-execution
+      hCaptchaRef.current?.resetCaptcha();
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const onSubmit = async (data: FormData) => {
+    // Check honeypot (silent rejection for bots)
+    if (honeypot) {
+      return;
+    }
+
+    // If captcha is not verified yet, store form data and trigger captcha
+    if (!hCaptchaToken) {
+      setPendingFormData(data);
+      setErrorMessage("");
+      setIsVerifying(true); // Show "Verifying..." state
+      // Execute captcha if already loaded, otherwise wait for onLoad
+      if (isCaptchaLoaded && hCaptchaRef.current) {
+        try {
+          await hCaptchaRef.current.execute();
+        } catch (error) {
+          console.error("Error executing hCaptcha:", error);
+          setSubmitStatus("error");
+          setErrorMessage("Failed to load captcha. Please try again.");
+          setIsVerifying(false);
+        }
+      }
+      return;
+    }
+
+    // If captcha token exists, proceed with submission
+    if (hCaptchaToken) {
+      await submitForm(data);
     }
   };
 
@@ -268,6 +319,7 @@ export function Contact() {
                     if (submitStatus === "error") {
                       setSubmitStatus("idle");
                       setErrorMessage("");
+                      setIsVerifying(false);
                     }
                   }}
                 >
@@ -537,38 +589,66 @@ export function Contact() {
                     )}
                   </div>
 
-                  {/* hCaptcha */}
-                  <div className="flex justify-center">
-                    <div className="[&_.h-captcha]:opacity-90 [&_.h-captcha]:rounded-lg [&_.h-captcha]:scale-90">
-                      <HCaptcha
-                        ref={hCaptchaRef}
-                        sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
-                        theme="dark"
-                        size={isSmallScreen ? "compact" : "normal"}
-                        reCaptchaCompat={false}
-                        onVerify={(token) => {
-                          setHCaptchaToken(token);
-                          setErrorMessage(""); // Clear any previous error
-                        }}
-                        onExpire={() => {
-                          setHCaptchaToken("");
-                        }}
-                        onError={(error) => {
-                          setHCaptchaToken("");
-                          console.error("hCaptcha error:", error);
-                        }}
-                      />
-                    </div>
-                  </div>
+                  {/* hCaptcha - invisible, triggered on form submit */}
+                  <HCaptcha
+                    ref={hCaptchaRef}
+                    sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
+                    theme="dark"
+                    size="invisible"
+                    reCaptchaCompat={false}
+                    onLoad={() => {
+                      setIsCaptchaLoaded(true);
+                    }}
+                    onReady={() => {
+                      setIsCaptchaLoaded(true);
+                    }}
+                    onVerify={async (token) => {
+                      setHCaptchaToken(token);
+                      setErrorMessage("");
+                      setIsVerifying(false); // Hide "Verifying..." state
+                      // Auto-submit form after successful verification
+                      if (pendingFormData) {
+                        await submitForm(pendingFormData, token);
+                      }
+                    }}
+                    onExpire={() => {
+                      setHCaptchaToken("");
+                      setIsCaptchaLoaded(false);
+                      setIsVerifying(false); // Hide "Verifying..." state
+                      setSubmitStatus("error");
+                      setErrorMessage(
+                        "Captcha verification expired. Please complete it again.",
+                      );
+                    }}
+                    onError={(error) => {
+                      setHCaptchaToken("");
+                      setIsCaptchaLoaded(false);
+                      setIsVerifying(false); // Hide "Verifying..." state
+                      setSubmitStatus("error");
+                      setErrorMessage(
+                        "Captcha verification failed. Please try again.",
+                      );
+                      console.error("hCaptcha error:", error);
+                    }}
+                  />
 
                   {/* Submit Button */}
                   <div className="space-y-2">
                     <Button
                       type="submit"
                       className="w-full h-12"
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || isVerifying}
                     >
-                      {isSubmitting ? (
+                      {isVerifying ? (
+                        <>
+                          <Loader2
+                            size={18}
+                            className="mr-2 animate-spin"
+                            aria-hidden="true"
+                          />
+                          Verifying...
+                        </>
+                      ) : isSubmitting ? (
                         <>
                           <Loader2
                             size={18}
