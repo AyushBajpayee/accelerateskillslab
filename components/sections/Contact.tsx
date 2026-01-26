@@ -36,9 +36,15 @@ const formSchema = z.object({
       (val) => /^\d{10}$/.test(val.replace(/\D/g, "")),
       "Please enter a 10-digit phone number",
     ),
-  course: z.enum(["data-analytics", "data-engineering", "all"], {
-    required_error: "Please select a course",
-  }),
+  course: z
+    .string()
+    .min(1, "Please select a course")
+    .refine(
+      (val) => ["data-analytics", "data-engineering", "all"].includes(val),
+      {
+        message: "Please select a course",
+      },
+    ),
   message: z
     .string()
     .max(1000, "Message must be less than 1000 characters")
@@ -59,6 +65,8 @@ export function Contact() {
   const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
   const [isCaptchaLoaded, setIsCaptchaLoaded] = useState<boolean>(false);
   const hCaptchaRef = useRef<HCaptcha>(null);
+  // Using a ref instead of state for the execution guard to avoid closure issues in setTimeout
+  const isExecutingCaptchaRef = useRef<boolean>(false);
 
   const {
     register,
@@ -81,11 +89,13 @@ export function Contact() {
 
   // Execute hCaptcha challenge when captcha is loaded and form is submitted
   useEffect(() => {
-    if (pendingFormData && isCaptchaLoaded && hCaptchaRef.current) {
+    if (pendingFormData && isCaptchaLoaded && hCaptchaRef.current && !isExecutingCaptchaRef.current) {
       // Call execute() to trigger challenge directly
       const timer = setTimeout(async () => {
         try {
-          if (hCaptchaRef.current) {
+          // Check ref.current for real-time value (avoids stale closure)
+          if (hCaptchaRef.current && !isExecutingCaptchaRef.current) {
+            isExecutingCaptchaRef.current = true;
             await hCaptchaRef.current.execute();
           }
         } catch (error) {
@@ -94,9 +104,10 @@ export function Contact() {
           setErrorMessage("Failed to load captcha. Please try again.");
           setPendingFormData(null);
           setIsVerifying(false);
+          isExecutingCaptchaRef.current = false;
         }
       }, 100);
-      
+
       return () => clearTimeout(timer);
     }
   }, [pendingFormData, isCaptchaLoaded]);
@@ -112,7 +123,9 @@ export function Contact() {
 
     if (!captchaToken) {
       setSubmitStatus("error");
-      setErrorMessage("Captcha verification is required. Please complete the captcha.");
+      setErrorMessage(
+        "Captcha verification is required. Please complete the captcha.",
+      );
       setIsSubmitting(false);
       return;
     }
@@ -166,6 +179,7 @@ export function Contact() {
         setPendingFormData(null);
         setIsCaptchaLoaded(false);
         setIsVerifying(false);
+        isExecutingCaptchaRef.current = false;
         hCaptchaRef.current?.resetCaptcha();
 
         // Auto-dismiss success message after 5 seconds
@@ -182,6 +196,7 @@ export function Contact() {
         // Reset captcha on error to allow retry
         setHCaptchaToken("");
         setIsCaptchaLoaded(false); // Reset loaded state to allow re-execution
+        isExecutingCaptchaRef.current = false;
         hCaptchaRef.current?.resetCaptcha();
       }
     } catch (error) {
@@ -200,6 +215,7 @@ export function Contact() {
       // Reset captcha on error to allow retry
       setHCaptchaToken("");
       setIsCaptchaLoaded(false); // Reset loaded state to allow re-execution
+      isExecutingCaptchaRef.current = false;
       hCaptchaRef.current?.resetCaptcha();
     } finally {
       setIsSubmitting(false);
@@ -217,17 +233,7 @@ export function Contact() {
       setPendingFormData(data);
       setErrorMessage("");
       setIsVerifying(true); // Show "Verifying..." state
-      // Execute captcha if already loaded, otherwise wait for onLoad
-      if (isCaptchaLoaded && hCaptchaRef.current) {
-        try {
-          await hCaptchaRef.current.execute();
-        } catch (error) {
-          console.error("Error executing hCaptcha:", error);
-          setSubmitStatus("error");
-          setErrorMessage("Failed to load captcha. Please try again.");
-          setIsVerifying(false);
-        }
-      }
+      // The useEffect will handle executing the captcha when it's loaded
       return;
     }
 
@@ -589,49 +595,6 @@ export function Contact() {
                     )}
                   </div>
 
-                  {/* hCaptcha - invisible, triggered on form submit */}
-                  <HCaptcha
-                    ref={hCaptchaRef}
-                    sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
-                    theme="dark"
-                    size="invisible"
-                    reCaptchaCompat={false}
-                    onLoad={() => {
-                      setIsCaptchaLoaded(true);
-                    }}
-                    onReady={() => {
-                      setIsCaptchaLoaded(true);
-                    }}
-                    onVerify={async (token) => {
-                      setHCaptchaToken(token);
-                      setErrorMessage("");
-                      setIsVerifying(false); // Hide "Verifying..." state
-                      // Auto-submit form after successful verification
-                      if (pendingFormData) {
-                        await submitForm(pendingFormData, token);
-                      }
-                    }}
-                    onExpire={() => {
-                      setHCaptchaToken("");
-                      setIsCaptchaLoaded(false);
-                      setIsVerifying(false); // Hide "Verifying..." state
-                      setSubmitStatus("error");
-                      setErrorMessage(
-                        "Captcha verification expired. Please complete it again.",
-                      );
-                    }}
-                    onError={(error) => {
-                      setHCaptchaToken("");
-                      setIsCaptchaLoaded(false);
-                      setIsVerifying(false); // Hide "Verifying..." state
-                      setSubmitStatus("error");
-                      setErrorMessage(
-                        "Captcha verification failed. Please try again.",
-                      );
-                      console.error("hCaptcha error:", error);
-                    }}
-                  />
-
                   {/* Submit Button */}
                   <div className="space-y-2">
                     <Button
@@ -667,6 +630,58 @@ export function Contact() {
                       </p>
                     )}
                   </div>
+
+                  {/* hCaptcha - invisible, triggered on form submit */}
+                  <HCaptcha
+                    ref={hCaptchaRef}
+                    sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
+                    theme="dark"
+                    size="invisible"
+                    reCaptchaCompat={false}
+                    onLoad={() => {
+                      setIsCaptchaLoaded(true);
+                    }}
+                    onReady={() => {
+                      setIsCaptchaLoaded(true);
+                    }}
+                    onVerify={async (token) => {
+                      setHCaptchaToken(token);
+                      setErrorMessage("");
+                      setIsVerifying(false); // Hide "Verifying..." state
+                      isExecutingCaptchaRef.current = false; // Reset execution flag
+                      // Auto-submit form after successful verification
+                      if (pendingFormData) {
+                        await submitForm(pendingFormData, token);
+                      }
+                    }}
+                    onExpire={() => {
+                      setHCaptchaToken("");
+                      setIsCaptchaLoaded(false);
+                      setIsVerifying(false); // Hide "Verifying..." state
+                      isExecutingCaptchaRef.current = false; // Reset execution flag
+                      setSubmitStatus("error");
+                      setErrorMessage(
+                        "Captcha verification expired. Please complete it again.",
+                      );
+                    }}
+                    onError={(error) => {
+                      setHCaptchaToken("");
+                      setIsCaptchaLoaded(false);
+                      setIsVerifying(false); // Hide "Verifying..." state
+                      isExecutingCaptchaRef.current = false; // Reset execution flag
+                      setSubmitStatus("error");
+                      setErrorMessage(
+                        "Captcha verification failed. Please try again.",
+                      );
+                      console.error("hCaptcha error:", error);
+                    }}
+                    onClose={() => {
+                      // User dismissed the challenge without completing
+                      setIsVerifying(false);
+                      isExecutingCaptchaRef.current = false;
+                      setPendingFormData(null);
+                    }}
+                  />
                 </form>
               )}
             </motion.div>
