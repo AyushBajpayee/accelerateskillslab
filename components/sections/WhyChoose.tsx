@@ -42,7 +42,7 @@ const features: FeatureCard[] = [
       "Immerse yourself with tasks, quizzes, and projects following each topic, ensuring that theory marries practice seamlessly.",
     gridClass: "lg:col-span-1 lg:row-span-2",
   },
-    {
+  {
     icon: MessageCircleQuestion,
     title: "Robust Doubt Support",
     description:
@@ -86,13 +86,13 @@ const cardVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: "easeOut" as const },
   },
 };
 
 export function WhyChoose() {
   return (
-    <section className="py-20 lg:py-28">
+    <section className="py-10 lg:py-20">
       <div className="container mx-auto px-4 sm:px-8 lg:px-20">
         {/* Section Heading */}
         <motion.h2
@@ -100,10 +100,31 @@ export function WhyChoose() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-14 lg:mb-20"
+          className="text-3xl font-regular sm:text-4xl lg:text-5xl  text-center mb-4"
         >
-          Why choose this bootcamp?
+          <span className="font-bold">Why choose</span>{" "}
+          <span
+            className="italic"
+            style={{ fontFamily: '"IBM Plex Serif", serif' }}
+          >
+            our
+          </span>{" "}
+          <span className="text-primary font-bold">Zero-to-Hero </span>
+          <span className="font-bold">Bootcamps ?</span>{" "}
         </motion.h2>
+
+        {/* Sub-heading */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
+          className="text-base sm:text-lg lg:text-xl text-muted-foreground text-center mb-14 lg:mb-20 max-w-3xl mx-auto"
+        >
+          Breaking into data engineering careers shouldn&apos;t feel this hard.
+          <br />
+          Our bootcamp makes the impossible possible.
+        </motion.p>
 
         {/* Bento Grid */}
         <motion.div
@@ -119,6 +140,7 @@ export function WhyChoose() {
               <motion.div
                 key={feature.title}
                 variants={cardVariants}
+                transition={{ duration: 0.5, ease: [0.42, 0, 0.58, 1] }}
                 className={`group relative flex flex-col items-center text-center gap-4 p-6 lg:p-8 rounded-2xl border border-white/5 bg-[#111827] hover:border-primary/20 transition-colors duration-300 ${feature.gridClass ?? ""}`}
               >
                 {/* Icon */}

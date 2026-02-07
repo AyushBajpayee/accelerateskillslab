@@ -7,7 +7,6 @@ import { LampEffect } from "@/components/ui/lamp-effect";
 import { motion } from "motion/react";
 import { ArrowRight, Calendar, ChevronDown } from "lucide-react";
 import { Navbar } from "@/components/sections/Navbar";
-import { HonestSection } from "@/components/sections/HonestSection";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 import { Code } from "lucide-react";
@@ -209,7 +208,7 @@ export default function DataEngineeringPage() {
         <Navbar />
 
         {/* Course-specific Hero Section */}
-        <section className="relative pt-[160px] pb-[120px] lg:pt-[160px] lg:pb-[120px] overflow-hidden">
+        <section className="relative pt-[160px] pb-[200px] lg:pt-[280px] lg:pb-[250px] overflow-hidden">
           {/* Layered Aceternity Backgrounds */}
           <Spotlight
             className="-top-40 left-0 md:-top-20 md:left-60"
@@ -274,10 +273,8 @@ export default function DataEngineeringPage() {
           </div>
         </section>
 
-        <HonestSection />
-
         {/* Curriculum Section */}
-        <section id="course-details" className="relative py-20 lg:py-32">
+        <section id="course-details" className="relative py-10 lg:py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {/* Section Heading */}
             <motion.div

@@ -125,7 +125,7 @@ function LiveSessionMockup() {
 
 export function Hero() {
   return (
-    <section className="relative pt-[160px] pb-[120px] lg:pt-[160px] lg:pb-[120px] flex flex-col justify-center overflow-hidden">
+    <section className="relative pt-[160px] pb-[200px] lg:pt-[280px] lg:pb-[250px] flex flex-col justify-center overflow-hidden">
       <div className="container mx-auto px-4 sm:px-8 lg:px-20 relative z-10">
         {/* Two column layout - reversed on mobile so video appears first */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-center gap-8 lg:gap-0">
