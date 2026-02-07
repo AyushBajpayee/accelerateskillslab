@@ -20,34 +20,36 @@ export function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled
-          ? "bg-background/80 backdrop-blur-md border-b border-white/10 shadow-sm"
-          : "bg-transparent"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-white/10",
+        isScrolled && "backdrop-blur-md shadow-sm",
       )}
+      style={{
+        background:
+          "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
+      }}
     >
-      <div className="container mx-auto px-4 py-2 sm:px-6 lg:px-8">
+      <div className="px-4 py-2 sm:px-8 lg:px-20">
         <div className="flex items-center justify-between h-16">
-          {/* Logo and Brand Name */}
+          {/* Logo and Brand Name: "A" + "ccelerate Skills Lab", logo-only on small screens */}
           <div className="shrink-0 flex items-center">
-            <Link href="/" className="flex items-center gap-1.5">
-              <div className="relative w-10 h-10  shrink-0">
+            <Link
+              href="/"
+              className="flex items-center gap-0 sm:gap-0.5"
+              aria-label="Accelerate Skills Lab"
+            >
+              <div className="relative w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center">
                 <Image
-                  src="/mainLogo.png"
-                  alt="AccelerateSkillsLab Logo"
-                  fill
-                  className="object-contain"
+                  src="/asl_logo.svg"
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="object-contain w-full h-full "
                   priority
                 />
               </div>
-              <div className="flex flex-col -space-y-0.5">
-                <span className="text-sm sm:text-base font-medium text-white leading-[1.25]">
-                  Accelerate
-                </span>
-                <span className="text-lg sm:text-xl font-bold text-white leading-[1.25]">
-                  SkillsLab
-                </span>
-              </div>
+              <span className="hidden sm:inline text-lg sm:text-xl font-bold text-white leading-tight align-middle">
+                ccelerate Skills Lab
+              </span>
             </Link>
           </div>
 
@@ -57,11 +59,7 @@ export function Navbar() {
               <HoverBorderGradient
                 containerClassName="rounded-full hover:border-primary transition-colors duration-200"
                 as="div"
-                className="px-4 py-2 sm:px-6 sm:py-2.5 text-xs sm:text-sm font-medium text-white flex items-center justify-center"
-                innerStyle={{
-                  background:
-                    "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
-                }}
+                className="px-5 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base font-medium dark:bg-black bg-white text-black dark:text-white flex items-center justify-center"
               >
                 Find Your Program
               </HoverBorderGradient>

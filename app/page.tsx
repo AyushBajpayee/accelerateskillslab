@@ -4,6 +4,7 @@ import { Footer } from "@/components/sections/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { HonestSection } from "@/components/sections/HonestSection";
 import { Navbar } from "@/components/sections/Navbar";
+import { WhyChoose } from "@/components/sections/WhyChoose";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <div className="relative z-10">
         <Navbar />
         <Hero />
+        <WhyChoose />
         <HonestSection />
         <Courses />
         <Contact />

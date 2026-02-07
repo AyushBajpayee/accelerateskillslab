@@ -1,34 +1,140 @@
 "use client";
 
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
-import { BackgroundBeams } from "@/components/ui/background-beams";
-import { Spotlight } from "@/components/ui/spotlight";
-import { LampEffect } from "@/components/ui/lamp-effect";
 import { motion } from "motion/react";
-import { ArrowRight, CheckCircle, Play, Star } from "lucide-react";
-import Image from "next/image";
+import {
+  ArrowRight,
+  MessageSquare,
+  Mic,
+  Video,
+  ScreenShare,
+  Settings,
+} from "lucide-react";
+
+const participants = [
+  { name: "Instructor", isInstructor: true },
+  { name: "Priya Sharma", isInstructor: false },
+  { name: "Rahul Verma", isInstructor: false },
+  { name: "Anita Patel", isInstructor: false },
+  { name: "Vikram Singh", isInstructor: false },
+  { name: "Neha Gupta", isInstructor: false },
+  { name: "Amit Kumar", isInstructor: false },
+  { name: "Kavya Reddy", isInstructor: false },
+  { name: "Arjun Mehta", isInstructor: false },
+];
+
+function LiveSessionMockup() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="relative w-full  mx-auto lg:mx-0"
+    >
+      {/* Main container with gradient border */}
+      <div className="rounded-2xl bg-linear-to-br from-slate-800 to-slate-900 p-1 shadow-2xl">
+        <div className="rounded-xl bg-slate-900 overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-700/50">
+            <div className="flex gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-red-500" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500" />
+              <div className="w-3 h-3 rounded-full bg-green-500" />
+            </div>
+            <span className="text-xs text-slate-400 ml-2">
+              Data Engineering Bootcamp - Live Session
+            </span>
+          </div>
+
+          {/* Participants Grid */}
+          <div className="p-3">
+            <div className="grid grid-cols-3 gap-2">
+              {participants.map((participant, index) => (
+                <div
+                  key={index}
+                  className="relative aspect-video rounded-lg overflow-hidden bg-linear-to-br from-slate-700 to-slate-800"
+                >
+                  {/* Placeholder avatar */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div
+                      className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white font-medium text-sm ${
+                        participant.isInstructor ? "bg-primary" : "bg-slate-600"
+                      }`}
+                    >
+                      {participant.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </div>
+                  </div>
+                  {/* Name badge */}
+                  <div className="absolute bottom-1 left-1 right-1">
+                    <span
+                      className={`text-[10px] sm:text-xs px-1.5 py-0.5 rounded ${
+                        participant.isInstructor
+                          ? "bg-primary/90 text-white"
+                          : "bg-black/60 text-slate-200"
+                      }`}
+                    >
+                      {participant.isInstructor ? "👨‍🏫 " : ""}
+                      {participant.name}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="px-4 py-3 border-t border-slate-700/50 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span className="text-xs text-slate-400">
+                Live Session - Cohort in Progress
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
+                <MessageSquare size={14} />
+              </button>
+              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
+                <Mic size={14} />
+              </button>
+              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
+                <Video size={14} />
+              </button>
+              <button className="p-1.5 rounded-lg bg-red-500/80 text-white hover:bg-red-500 transition-colors">
+                <ScreenShare size={14} />
+              </button>
+              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
+                <Settings size={14} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Decorative glow */}
+      <div className="absolute -inset-4 bg-primary/10 rounded-3xl blur-3xl -z-10" />
+    </motion.div>
+  );
+}
 
 export function Hero() {
   return (
-    <section className="relative pt-[160px] pb-[120px] lg:pt-[160px] lg:pb-[120px] overflow-hidden">
-      {/* Layered Aceternity Backgrounds */}
-      <Spotlight
-        className="-top-40 left-0 md:-top-20 md:left-60"
-        fill="#2756f7"
-      />
-      <BackgroundBeams className="opacity-60" />
-
-      {/* Sun Lamp Effect - positioned at bottom center */}
-      <LampEffect className="opacity-80" fill="#2756f7" position="bottom" />
-
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex flex-col items-center">
-          {/* Text Content - Centered */}
+    <section className="relative pt-[160px] pb-[120px] lg:pt-[160px] lg:pb-[120px] flex flex-col justify-center overflow-hidden">
+      <div className="container mx-auto px-4 sm:px-8 lg:px-20 relative z-10">
+        {/* Two column layout - reversed on mobile so video appears first */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-center gap-8 lg:gap-0">
+          {/* Text Content - Left side */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="max-w-4xl text-center"
+            className="flex-1 lg:max-w-none"
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
               <span className="relative flex h-2 w-2">
@@ -38,73 +144,48 @@ export function Hero() {
               3-Month Intensive Bootcamps
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
-              <span className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl">
-                Transform from beginner to professional with our
-              </span>
+            <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6 leading-[1.1]">
+              Learn <span className="text-primary">Live.</span>
               <br />
-              <span className="text-primary">Zero-to-Hero bootcamp</span>
+              Build <span className="text-primary">Real.</span>
+              <br />
+              Get <span className="text-primary">Job-Ready.</span>
             </h1>
 
-            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
-              Our intensive bootcamp takes you from complete beginner to
-              job-ready professional. Master dashboards and visualization tools,
-              or build production-grade pipelines and cloud infrastructure.
+            <p className="text-sm sm:text-base  text-muted-foreground mb-4 leading-relaxed max-w-lg">
+              Live, instructor-led bootcamps — not pre-recorded videos. Go from
+              beginner to job-ready in 3 months with hands-on projects,
+              mentorship, and placement support. Master dashboards and
+              visualization tools, or build production-grade pipelines and cloud
+              infrastructure.
             </p>
-
-            {/* Social Proof Badge with 5-Star Rating */}
-            {/* <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.4, delay: 0.3 }}
-                            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="flex -space-x-3">
-                                    {[1, 2, 3, 4].map((i) => (
-                                        <div
-                                            key={i}
-                                            className="w-10 h-10 rounded-full border-2 border-background bg-muted flex items-center justify-center overflow-hidden"
-                                        >
-                                            <div className="w-full h-full bg-slate-200 dark:bg-slate-800" />
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="flex flex-col items-start">
-                                    <div className="flex items-center gap-1">
-                                        {[1, 2, 3, 4, 5].map((i) => (
-                                            <Star
-                                                key={i}
-                                                size={16}
-                                                className="fill-[#e0a210] text-[#e0a210]"
-                                            />
-                                        ))}
-                                    </div>
-                                    <p className="text-sm text-muted-foreground">
-                                        Join 10,000+ students worldwide
-                                    </p>
-                                </div>
-                            </div>
-                        </motion.div> */}
 
             {/* CTA Button */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.4 }}
-              className="flex justify-center"
             >
               <HoverBorderGradient
                 containerClassName="rounded-full w-fit"
                 as="a"
                 href="#courses"
-                className="h-14 px-10 text-lg dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
+                className="h-12 px-8 text-lg text-white flex items-center space-x-2"
+                innerStyle={{
+                  background:
+                    "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
+                }}
               >
-                <span>Find Your Program</span>
-                <ArrowRight size={20} />
+                <span>Explore Programs</span>
+                <ArrowRight size={18} />
               </HoverBorderGradient>
             </motion.div>
           </motion.div>
+
+          {/* Live Session Mockup - Right side */}
+          <div className="flex-1 flex justify-start">
+            <LiveSessionMockup />
+          </div>
         </div>
       </div>
     </section>
