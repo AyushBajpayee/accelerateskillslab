@@ -5,14 +5,107 @@ import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Spotlight } from "@/components/ui/spotlight";
 import { LampEffect } from "@/components/ui/lamp-effect";
 import { motion } from "motion/react";
-import { ArrowRight, Calendar, ChevronDown } from "lucide-react";
-import { Navbar } from "@/components/sections/Navbar";
-import { HonestSection } from "@/components/sections/HonestSection";
+import {
+  ArrowRight,
+  Calendar,
+  BarChart3,
+  LineChart,
+  Database,
+  Table,
+  Expand,
+  MessageSquare,
+  Mic,
+  Video,
+  ScreenShare,
+  Settings,
+} from "lucide-react";
+import Image from "next/image";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 import { BookOpen } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { TiltedToolCard } from "@/components/ui/TiltedToolCard";
+import { SiPython, SiPandas, SiNumpy, SiTableau, SiGithub } from "react-icons/si";
+import { IconType } from "react-icons";
+import {
+  BarChart,
+  Bar,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from "recharts";
+import { TrendingUp, IndianRupee, Briefcase } from "lucide-react";
+
+const tools: { name: string; icon: IconType | React.ComponentType<{ size?: number; className?: string }> }[] = [
+  { name: "Microsoft Excel", icon: Table },
+  { name: "Python", icon: SiPython },
+  { name: "Pandas", icon: SiPandas },
+  { name: "NumPy", icon: SiNumpy },
+  { name: "Matplotlib", icon: BarChart3 },
+  { name: "Seaborn", icon: LineChart },
+  { name: "SQL", icon: Database },
+  { name: "Tableau", icon: SiTableau },
+  { name: "Power BI", icon: BarChart3 },
+  { name: "GitHub", icon: SiGithub },
+];
+
+// Real salary data by career level - India (Sources: AmbitionBox, Glassdoor India, Analytics India Mag 2024-2025)
+const salaryByLevel = [
+  { level: "Entry Level", shortLabel: "Entry", salary: 4, years: "0-1 yr" },
+  { level: "Junior Analyst", shortLabel: "Junior", salary: 6.5, years: "1-3 yrs" },
+  { level: "Mid-Career", shortLabel: "Mid", salary: 10, years: "4-6 yrs" },
+  { level: "Senior Analyst", shortLabel: "Senior", salary: 15, years: "7-9 yrs" },
+  { level: "Lead Analyst", shortLabel: "Lead", salary: 20, years: "10+ yrs" },
+  { level: "Analytics Manager", shortLabel: "Manager", salary: 26, years: "Mgmt" },
+  { level: "Director Analytics", shortLabel: "Director", salary: 50, years: "Director" },
+];
+
+// India Data Analytics market size growth (Sources: IMARC Group, Grand View Research — base $2.6B in 2024, ~27% CAGR)
+const marketGrowth = [
+  { year: "2020", size: 0.98 },
+  { year: "2021", size: 1.25 },
+  { year: "2022", size: 1.6 },
+  { year: "2023", size: 2.04 },
+  { year: "2024", size: 2.6 },
+  { year: "2025", size: 3.31 },
+  { year: "2026", size: 4.22 },
+  { year: "2028", size: 6.86 },
+  { year: "2030", size: 11.15 },
+];
+
+const keyStats = [
+  {
+    icon: TrendingUp,
+    value: "51%",
+    label: "Supply-Demand Gap",
+    sublabel: "NASSCOM 2024",
+  },
+  {
+    icon: IndianRupee,
+    value: "₹50L+",
+    label: "Director-Level Salary",
+    sublabel: "Analytics Leadership",
+  },
+  {
+    icon: Briefcase,
+    value: "$27B",
+    label: "India Market by 2033",
+    sublabel: "~27% CAGR",
+  },
+];
 
 const course = {
   id: "data-analytics",
@@ -142,6 +235,95 @@ const modules = [
   },
 ];
 
+// Module images mapping
+const moduleImages: Record<string, string> = {
+  "Week 1": "/courses/data-engineering/week1_4.png",
+  "Week 2": "/courses/data-engineering/week5_7.png",
+  "Week 3-4": "/courses/data-engineering/week8_11.png",
+  "Week 5-6": "/courses/data-engineering/week12_15.png",
+  "Week 6-7": "/courses/data-engineering/week16_20.png",
+};
+
+function ScreenShareMockup() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="relative w-full mx-auto lg:mx-0"
+    >
+      {/* Main container with gradient border */}
+      <div className="rounded-2xl bg-linear-to-br from-slate-800 to-slate-900 p-1 shadow-2xl">
+        <div className="rounded-xl bg-slate-900 overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-700/50">
+            <div className="flex gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-red-500" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500" />
+              <div className="w-3 h-3 rounded-full bg-green-500" />
+            </div>
+            <span className="text-xs text-slate-400 ml-2">
+              Data Analytics Bootcamp - Live Session
+            </span>
+          </div>
+
+          {/* Screen Share Content */}
+          <div className="p-3">
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-[#1e1e2e] border border-slate-700/50">
+              {/* Course Roadmap Image */}
+              <Image
+                src="/courses/data-analytics/data_analytics_hero.png"
+                alt="Data Analytics: The 3-Month Journey from Zero to Hero"
+                fill
+                className="object-cover"
+              />
+
+              {/* Screen share indicator */}
+              <div className="absolute top-2 right-2 flex items-center gap-1.5 px-2 py-1 bg-red-500/90 rounded text-[10px] text-white">
+                <ScreenShare size={10} />
+                <span>Sharing</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="px-4 py-3 border-t border-slate-700/50 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span className="text-xs text-slate-400">
+                Instructor Sharing Screen
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
+                <MessageSquare size={14} />
+              </button>
+              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
+                <Mic size={14} />
+              </button>
+              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
+                <Video size={14} />
+              </button>
+              <button className="p-1.5 rounded-lg bg-red-500/80 text-white hover:bg-red-500 transition-colors">
+                <ScreenShare size={14} />
+              </button>
+              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
+                <Settings size={14} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Decorative glow */}
+      <div className="absolute -inset-4 bg-primary/10 rounded-3xl blur-3xl -z-10" />
+    </motion.div>
+  );
+}
+
 function ModuleCard({
   module,
   index,
@@ -149,90 +331,109 @@ function ModuleCard({
   module: (typeof modules)[0];
   index: number;
 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const moduleImage = moduleImages[module.week];
 
   return (
-    <div className="bg-[#111827] rounded-2xl p-6 sm:p-8 border border-blue-500/30 hover:border-blue-500/50 transition-colors">
-      <div className="flex flex-col gap-4">
-        {/* Week Badge and Header */}
-        <div className="flex items-start justify-between gap-4">
+    <Dialog>
+      <div className="relative bg-[#111827] rounded-2xl p-6 sm:p-8 border border-blue-500/30 hover:border-blue-500/50 transition-colors">
+        {/* Expand Button - Top Right */}
+        <DialogTrigger asChild>
+          <button
+            className="absolute top-4 right-4 p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-primary/50 transition-all group"
+            aria-label="Expand module details"
+          >
+            <Expand size={18} className="text-gray-400 group-hover:text-primary transition-colors" />
+          </button>
+        </DialogTrigger>
+
+        <div className="flex flex-col gap-4 pr-12">
+          {/* Week Badge */}
           <div className="flex items-center gap-3">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-white text-sm font-medium">
               <Calendar size={16} />
               {module.week}
             </div>
           </div>
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-gray-400 hover:text-white transition-colors p-2 -mt-2 -mr-2 cursor-pointer"
-            aria-label={isExpanded ? "Collapse" : "Expand"}
-          >
-            <ChevronDown
-              size={20}
-              className={`transition-transform duration-200 ${
-                isExpanded ? "rotate-180" : ""
-              }`}
-            />
-          </button>
+
+          {/* Module Title */}
+          <h3 className="text-xl sm:text-2xl font-bold text-white">
+            {module.title}
+          </h3>
+
+          {/* Module Description */}
+          <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
+            {module.description}
+          </p>
         </div>
+      </div>
 
-        {/* Module Title */}
-        <h3 className="text-xl sm:text-2xl font-bold text-white">
-          {module.title}
-        </h3>
+      {/* Modal Content */}
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-[#0d1117] border-[#ffffff12] p-0">
+        {/* Image Section */}
+        {moduleImage && (
+          <div className="relative w-full rounded-t-lg overflow-hidden bg-[#0a0f1a]">
+            <Image
+              src={moduleImage}
+              alt={module.title}
+              width={1024}
+              height={576}
+              className="w-full h-auto object-contain"
+            />
+          </div>
+        )}
 
-        {/* Module Description */}
-        <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
-          {module.description}
-        </p>
-
-        {/* Expandable Sub-modules */}
-        <motion.div
-          initial={false}
-          animate={{
-            height: isExpanded ? "auto" : 0,
-            opacity: isExpanded ? 1 : 0,
-          }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="overflow-hidden"
-        >
-          {isExpanded && (
-            <div className="pt-4 mt-4 border-t border-white/5">
-              <div className="space-y-3">
-                {module.subModules.map((subModule, subIndex) => {
-                  // Remove numbered prefix (e.g., "1. ") if present
-                  const cleanModule = subModule.replace(/^\d+\.\s*/, "");
-                  // Split by " - " to separate title and description
-                  const parts = cleanModule.split(" - ");
-                  const title = parts[0];
-                  const description = parts.slice(1).join(" - ");
-
-                  return (
-                    <div
-                      key={subIndex}
-                      className="text-gray-400 text-sm sm:text-base leading-relaxed"
-                    >
-                      {description ? (
-                        <>
-                          <span className="font-semibold text-white">
-                            {title}
-                          </span>
-                          {" - " + description}
-                        </>
-                      ) : (
-                        <span className="font-semibold text-white">
-                          {title}
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
+        <div className="px-6 pt-5 pb-8 space-y-5">
+          <DialogHeader className="space-y-2">
+            {/* Week Badge in Modal */}
+            <div className="flex items-center gap-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-medium">
+                <Calendar size={14} />
+                {module.week}
               </div>
             </div>
-          )}
-        </motion.div>
-      </div>
-    </div>
+
+            <DialogTitle className="text-lg sm:text-xl font-bold text-white">
+              {module.title}
+            </DialogTitle>
+
+            <DialogDescription className="text-gray-400 text-xs sm:text-sm leading-relaxed">
+              {module.description}
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Detailed Sub-modules */}
+          <div className="pt-4 border-t border-white/10">
+            <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-4">
+              What You&apos;ll Learn
+            </h4>
+            <div className="space-y-3">
+              {module.subModules.map((subModule, subIndex) => {
+                const cleanModule = subModule.replace(/^\d+\.\s*/, "");
+                const parts = cleanModule.split(" - ");
+                const title = parts[0];
+                const description = parts.slice(1).join(" - ");
+
+                return (
+                  <div
+                    key={subIndex}
+                    className="text-gray-400 text-xs sm:text-sm leading-relaxed"
+                  >
+                    {description ? (
+                      <>
+                        <span className="font-semibold text-white">{title}</span>
+                        {" - " + description}
+                      </>
+                    ) : (
+                      <span className="font-semibold text-white">{title}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -243,10 +444,8 @@ export default function DataAnalyticsPage() {
       <div className="fixed inset-0 bg-size-[20px_20px] bg-[linear-gradient(to_right,#e4e4e7_1px,transparent_1px),linear-gradient(to_bottom,#e4e4e7_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)] opacity-30 pointer-events-none" />
 
       <div className="relative z-10">
-        <Navbar />
-
         {/* Course-specific Hero Section */}
-        <section className="relative pt-[160px] pb-[120px] lg:pt-[160px] lg:pb-[120px] overflow-hidden">
+        <section className="relative pt-[160px] pb-[200px] lg:pt-[280px] lg:pb-[250px] flex flex-col justify-center overflow-hidden">
           {/* Layered Aceternity Backgrounds */}
           <Spotlight
             className="-top-40 left-0 md:-top-20 md:left-60"
@@ -257,14 +456,15 @@ export default function DataAnalyticsPage() {
           {/* Sun Lamp Effect - positioned at bottom center */}
           <LampEffect className="opacity-80" fill="#2756f7" position="bottom" />
 
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex flex-col items-center">
-              {/* Text Content - Centered */}
+          <div className="container mx-auto px-4 sm:px-8 lg:px-20 relative z-10">
+            {/* Two column layout - reversed on mobile so video appears first */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-center gap-8 lg:gap-0">
+              {/* Text Content - Left side */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="max-w-4xl text-center"
+                className="flex-1 lg:max-w-none"
               >
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
                   <span className="relative flex h-2 w-2">
@@ -274,15 +474,15 @@ export default function DataAnalyticsPage() {
                   3-Months Data Analytics Bootcamp
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
-                  <span className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl">
+                <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6 leading-[1.1]">
+                  <span className="text-3xl sm:text-4xl lg:text-4xl xl:text-5xl">
                     Data Analytics
                   </span>
                   <br />
                   <span className="text-primary">Zero-to-Hero program</span>
                 </h1>
 
-                <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
+                <p className="text-sm sm:text-base text-muted-foreground mb-4 leading-relaxed max-w-lg">
                   This redesigned curriculum condenses the complete data
                   analytics journey into an intensive 3-month program suitable
                   for full-time learners or highly committed part-time students.
@@ -295,27 +495,343 @@ export default function DataAnalyticsPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.4 }}
-                  className="flex justify-center"
                 >
                   <HoverBorderGradient
-                    containerClassName="rounded-full"
+                    containerClassName="rounded-full w-fit"
                     as="a"
                     href="#course-details"
-                    className="h-14 px-10 text-lg dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
+                    className="h-12 px-8 text-lg text-white flex items-center space-x-2"
+                    innerStyle={{
+                      background:
+                        "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
+                    }}
                   >
                     <span>Curriculum</span>
-                    <ArrowRight size={20} />
+                    <ArrowRight size={18} />
                   </HoverBorderGradient>
                 </motion.div>
               </motion.div>
+
+              {/* Screen Share Mockup - Right side */}
+              <div className="flex-1 lg:flex-[1.5] flex justify-start lg:min-w-0">
+                <ScreenShareMockup />
+              </div>
             </div>
           </div>
         </section>
 
-        <HonestSection />
+        {/* Data Analytics as a Career Section */}
+        <section className="relative py-16 lg:py-24">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Section Heading */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">
+                <span className="font-bold">Data Analytics as a Career</span>
+                <br />
+                <span
+                  className="italic font-normal text-xl sm:text-2xl lg:text-3xl xl:text-4xl"
+                  style={{
+                    fontFamily:
+                      '"IBM Plex Serif", "IBM Plex Serif Placeholder", serif',
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  A high-growth career{" "}
+                  <span className="text-primary">backed by real numbers.</span>
+                </span>
+              </h2>
+            </motion.div>
+
+            {/* Key Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-[1000px] mx-auto mb-14">
+              {keyStats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <motion.div
+                    key={stat.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    className="relative rounded-2xl border border-[#ffffff12] bg-[#0d1117] p-4 overflow-visible"
+                  >
+                    <div
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[0.5px] rounded-full"
+                      style={{
+                        background:
+                          "linear-gradient(90deg, transparent, #2756f7, transparent)",
+                      }}
+                    />
+                    <div className="bg-[#111827] rounded-xl p-6 flex flex-col items-center gap-2 border border-blue-500/20 hover:border-blue-500/40 transition-colors h-full">
+                      <Icon size={28} className="text-primary mb-1" />
+                      <span className="text-3xl sm:text-4xl font-bold text-white">
+                        {stat.value}
+                      </span>
+                      <span className="text-white text-sm sm:text-base font-medium text-center">
+                        {stat.label}
+                      </span>
+                      <span className="text-gray-500 text-xs text-center">
+                        {stat.sublabel}
+                      </span>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Descriptive Text - Part 1 (above charts) */}
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-gray-400 text-base sm:text-lg leading-relaxed max-w-3xl mx-auto text-center mb-14"
+            >
+              Data analytics is one of the fastest-growing career fields in
+              India. NASSCOM reports a{" "}
+              <span className="text-white font-semibold">
+                51% supply-demand gap
+              </span>{" "}
+              for data professionals, with demand projected to exceed 1 million
+              roles by 2026 and India&apos;s AI talent pool reaching 1.25
+              million by 2027.
+            </motion.p>
+
+            {/* Charts Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-[1200px] mx-auto">
+              {/* Chart 1: Salary by Career Level */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="relative rounded-[32px] border border-[#ffffff12] bg-[#0d1117] p-4 overflow-visible"
+              >
+                <div
+                  className="absolute bottom-0 left-[20%] -translate-x-1/2 w-[40%] h-[0.5px] rounded-full"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, transparent, #2756f7, transparent)",
+                  }}
+                />
+                <div className="bg-[#111827] rounded-2xl p-6 sm:p-8 border border-blue-500/20">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
+                    Salary by Career Level
+                  </h3>
+                  <p className="text-gray-500 text-sm mb-6">
+                    Average India data analyst compensation by seniority (LPA)
+                  </p>
+                  <div className="w-full h-[320px] sm:h-[360px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={salaryByLevel}
+                        margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
+                      >
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="#1e293b"
+                          vertical={false}
+                        />
+                        <XAxis
+                          dataKey="shortLabel"
+                          tick={{ fill: "#9ca3af", fontSize: 12 }}
+                          tickLine={false}
+                          axisLine={{ stroke: "#1e293b" }}
+                          angle={-35}
+                          textAnchor="end"
+                          height={50}
+                        />
+                        <YAxis
+                          tick={{ fill: "#9ca3af", fontSize: 12 }}
+                          tickLine={false}
+                          axisLine={false}
+                          tickFormatter={(value: number) =>
+                            `₹${value}L`
+                          }
+                          domain={[0, 55]}
+                        />
+                        <Tooltip
+                          cursor={{ fill: "rgba(39, 86, 247, 0.08)" }}
+                          contentStyle={{
+                            backgroundColor: "#111827",
+                            border: "1px solid rgba(59, 130, 246, 0.3)",
+                            borderRadius: "12px",
+                            padding: "12px 16px",
+                          }}
+                          labelStyle={{ color: "#fff", fontWeight: 600, marginBottom: 4 }}
+                          itemStyle={{ color: "#9ca3af" }}
+                          formatter={(value: number | undefined) => [
+                            `₹${value ?? 0} LPA`,
+                            "Avg. Salary",
+                          ]}
+                          labelFormatter={(label: unknown) => {
+                            const labelStr = String(label);
+                            const item = salaryByLevel.find(
+                              (d) => d.shortLabel === labelStr
+                            );
+                            return item
+                              ? `${item.level} (${item.years})`
+                              : labelStr;
+                          }}
+                        />
+                        <Bar dataKey="salary" radius={[6, 6, 0, 0]} maxBarSize={48}>
+                          {salaryByLevel.map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={
+                                index >= 5
+                                  ? "#2756f7"
+                                  : `rgba(39, 86, 247, ${0.35 + index * 0.1})`
+                              }
+                            />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <p className="text-gray-600 text-xs mt-4 text-center">
+                    Sources: AmbitionBox, Glassdoor India, Analytics India Mag (2024-2025)
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Chart 2: Market Size Growth */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="relative rounded-[32px] border border-[#ffffff12] bg-[#0d1117] p-4 overflow-visible"
+              >
+                <div
+                  className="absolute top-0 right-[20%] translate-x-1/2 w-[40%] h-[0.5px] rounded-full"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, transparent, #2756f7, transparent)",
+                  }}
+                />
+                <div className="bg-[#111827] rounded-2xl p-6 sm:p-8 border border-blue-500/20">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
+                    Data Analytics Market Growth
+                  </h3>
+                  <p className="text-gray-500 text-sm mb-6">
+                    India market size in USD billions (~27% CAGR)
+                  </p>
+                  <div className="w-full h-[320px] sm:h-[360px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={marketGrowth}
+                        margin={{ top: 10, right: 10, left: 0, bottom: 5 }}
+                      >
+                        <defs>
+                          <linearGradient
+                            id="marketGradient"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <stop
+                              offset="5%"
+                              stopColor="#2756f7"
+                              stopOpacity={0.4}
+                            />
+                            <stop
+                              offset="95%"
+                              stopColor="#2756f7"
+                              stopOpacity={0.02}
+                            />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="#1e293b"
+                          vertical={false}
+                        />
+                        <XAxis
+                          dataKey="year"
+                          tick={{ fill: "#9ca3af", fontSize: 12 }}
+                          tickLine={false}
+                          axisLine={{ stroke: "#1e293b" }}
+                        />
+                        <YAxis
+                          tick={{ fill: "#9ca3af", fontSize: 12 }}
+                          tickLine={false}
+                          axisLine={false}
+                          tickFormatter={(value: number) => `$${value}B`}
+                          domain={[0, 12]}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "#111827",
+                            border: "1px solid rgba(59, 130, 246, 0.3)",
+                            borderRadius: "12px",
+                            padding: "12px 16px",
+                          }}
+                          labelStyle={{ color: "#fff", fontWeight: 600, marginBottom: 4 }}
+                          itemStyle={{ color: "#9ca3af" }}
+                          formatter={(value: number | undefined) => [
+                            `$${value ?? 0}B`,
+                            "Market Size",
+                          ]}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="size"
+                          stroke="#2756f7"
+                          strokeWidth={2.5}
+                          fill="url(#marketGradient)"
+                          dot={{
+                            fill: "#2756f7",
+                            stroke: "#111827",
+                            strokeWidth: 2,
+                            r: 4,
+                          }}
+                          activeDot={{
+                            fill: "#2756f7",
+                            stroke: "#fff",
+                            strokeWidth: 2,
+                            r: 6,
+                          }}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <p className="text-gray-600 text-xs mt-4 text-center">
+                    Sources: IMARC Group, Grand View Research (India)
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Descriptive Text - Part 2 (below charts) */}
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-gray-400 text-base sm:text-lg leading-relaxed max-w-3xl mx-auto text-center mt-14"
+            >
+              Fuelled by Digital India initiatives, 5G rollout, and rapid cloud
+              adoption, India&apos;s data analytics market is set to reach{" "}
+              <span className="text-white font-semibold">
+                $27 billion by 2033
+              </span>
+              . With a clear career ladder from ₹4 LPA at entry level to ₹50L+
+              at the director level, there has never been a better time to
+              invest in data analytics skills.
+            </motion.p>
+          </div>
+        </section>
 
         {/* Curriculum Section */}
-        <section id="course-details" className="relative py-20 lg:py-32">
+        <section id="course-details" className="relative py-10 lg:py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {/* Section Heading */}
             <motion.div
@@ -342,39 +858,108 @@ export default function DataAnalyticsPage() {
               </h2>
             </motion.div>
 
-            {/* Parent Container with Border */}
-            <div className="flex flex-col gap-6">
-              {modules.map((module, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className="relative mx-auto w-full max-w-[1200px] rounded-[32px] border border-[#ffffff12] bg-[#0d1117] p-4 overflow-visible"
+            {/* Timeline Container */}
+            <div className="relative max-w-[1200px] mx-auto">
+              {/* Dashed timeline line — z-0 so it renders behind the cards, extends above/below cards */}
+              <div className="absolute -top-16 -bottom-16 left-4 lg:left-1/2 lg:-translate-x-px w-px border-l-2 border-dashed border-blue-500/30 z-0" />
+
+              <div className="flex flex-col gap-8 lg:gap-16">
+                {modules.map((module, index) => {
+                  const isLeft = index % 2 === 0;
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{
+                        opacity: 0,
+                        x: isLeft ? -30 : 30,
+                      }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: 0.15 }}
+                      className={`relative w-full lg:w-[60%] ${
+                        isLeft ? "lg:mr-auto" : "lg:ml-auto"
+                      } pl-10 lg:pl-4 rounded-[32px] border border-[#ffffff12] bg-[#0d1117] p-4 overflow-visible`}
+                    >
+                      {/* Blue Highlighter Glow - Bottom */}
+                      <div
+                        className="absolute bottom-0 left-[20%] -translate-x-1/2 w-[40%] h-[0.5px] rounded-full"
+                        style={{
+                          background:
+                            "linear-gradient(90deg, transparent, #2756f7, transparent)",
+                        }}
+                      />
+
+                      {/* Blue Highlighter Glow - Top */}
+                      <div
+                        className="absolute top-0 right-[20%] translate-x-1/2 w-[40%] h-[0.5px] rounded-full"
+                        style={{
+                          background:
+                            "linear-gradient(90deg, transparent, #2756f7, transparent)",
+                        }}
+                      />
+
+                      {/* Mobile timeline dot */}
+                      <div className="absolute left-[11px] top-8 w-[10px] h-[10px] rounded-full bg-primary border-2 border-[#0d1117] z-20 lg:hidden" />
+
+                      {/* Module */}
+                      <ModuleCard module={module} index={index} />
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Tools & Technologies Covered Section */}
+        <section className="relative py-10 lg:py-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Section Heading */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">
+                <span className="font-bold">Tools & Technologies Covered</span>
+                <br />
+                <span
+                  className="italic font-normal text-xl sm:text-2xl lg:text-3xl xl:text-4xl"
+                  style={{
+                    fontFamily:
+                      '"IBM Plex Serif", "IBM Plex Serif Placeholder", serif',
+                    letterSpacing: "-0.02em",
+                  }}
                 >
-                  {/* Blue Highlighter Glow - Bottom */}
-                  <div
-                    className="absolute bottom-0 left-[20%] -translate-x-1/2 w-[40%] h-[0.5px] rounded-full"
-                    style={{
-                      background:
-                        "linear-gradient(90deg, transparent, #2756f7, transparent)",
-                    }}
-                  />
+                  Industry-standard tools you will{" "}
+                  <span className="text-primary">master in this program.</span>
+                </span>
+              </h2>
+            </motion.div>
 
-                  {/* Blue Highlighter Glow - Top Right */}
-                  <div
-                    className="absolute top-0 right-[20%] translate-x-1/2 w-[40%] h-[0.5px] rounded-full"
-                    style={{
-                      background:
-                        "linear-gradient(90deg, transparent, #2756f7, transparent)",
-                    }}
-                  />
-
-                  {/* Module  */}
-                  <ModuleCard module={module} index={index} />
-                </motion.div>
-              ))}
+            {/* Tools Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 max-w-[1100px] mx-auto place-items-center">
+              {tools.map((tool, index) => {
+                const Icon = tool.icon;
+                return (
+                  <motion.div
+                    key={tool.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: index * 0.05 }}
+                  >
+                    <TiltedToolCard>
+                      <Icon size={40} className="text-primary" />
+                      <span className="text-white text-sm sm:text-base font-medium text-center">
+                        {tool.name}
+                      </span>
+                    </TiltedToolCard>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </section>
