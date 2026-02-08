@@ -28,7 +28,6 @@ import {
   DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Navbar } from "@/components/sections/Navbar";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 import { BookOpen } from "lucide-react";
@@ -445,8 +444,6 @@ export default function DataAnalyticsPage() {
       <div className="fixed inset-0 bg-size-[20px_20px] bg-[linear-gradient(to_right,#e4e4e7_1px,transparent_1px),linear-gradient(to_bottom,#e4e4e7_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)] opacity-30 pointer-events-none" />
 
       <div className="relative z-10">
-        <Navbar />
-
         {/* Course-specific Hero Section */}
         <section className="relative pt-[160px] pb-[200px] lg:pt-[280px] lg:pb-[250px] flex flex-col justify-center overflow-hidden">
           {/* Layered Aceternity Backgrounds */}
