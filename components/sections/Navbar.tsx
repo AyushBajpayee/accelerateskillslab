@@ -21,7 +21,7 @@ export function Navbar() {
   }, []);
 
   React.useEffect(() => {
-    const audio = new Audio("/audio/background-music.mp3");
+    const audio = new Audio("/audio/soft_ed_tech_music.mp3");
     audio.loop = true;
     audio.volume = 0.4;
     audioRef.current = audio;
