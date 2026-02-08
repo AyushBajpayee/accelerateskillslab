@@ -5,7 +5,19 @@ import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Spotlight } from "@/components/ui/spotlight";
 import { LampEffect } from "@/components/ui/lamp-effect";
 import { motion } from "motion/react";
-import { ArrowRight, Calendar, TrendingUp, IndianRupee, Briefcase, Expand } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  TrendingUp,
+  IndianRupee,
+  Briefcase,
+  Expand,
+  MessageSquare,
+  Mic,
+  Video,
+  ScreenShare,
+  Settings,
+} from "lucide-react";
 import Image from "next/image";
 import {
   Dialog,
@@ -20,6 +32,7 @@ import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 import { Code } from "lucide-react";
 import Link from "next/link";
+import { TiltedToolCard } from "@/components/ui/TiltedToolCard";
 import {
   SiPython,
   SiPostgresql,
@@ -204,6 +217,86 @@ const moduleImages: Record<string, string> = {
   "Week 16-20": "/courses/data-engineering/week16_20.png",
 };
 
+function ScreenShareMockup() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="relative w-full mx-auto lg:mx-0"
+    >
+      {/* Main container with gradient border */}
+      <div className="rounded-2xl bg-linear-to-br from-slate-800 to-slate-900 p-1 shadow-2xl">
+        <div className="rounded-xl bg-slate-900 overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-700/50">
+            <div className="flex gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-red-500" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500" />
+              <div className="w-3 h-3 rounded-full bg-green-500" />
+            </div>
+            <span className="text-xs text-slate-400 ml-2">
+              Data Engineering Bootcamp - Live Session
+            </span>
+          </div>
+
+          {/* Screen Share Content */}
+          <div className="p-3">
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-[#1e1e2e] border border-slate-700/50">
+              {/* Course Roadmap Image */}
+              <Image
+                src="/courses/data-engineering/data-eng-hero.png"
+                alt="Data Engineering Roadmap: From Zero to Hero in 20 Weeks"
+                fill
+                className="object-cover"
+              />
+
+              {/* Screen share indicator */}
+              <div className="absolute top-2 right-2 flex items-center gap-1.5 px-2 py-1 bg-red-500/90 rounded text-[10px] text-white">
+                <ScreenShare size={10} />
+                <span>Sharing</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="px-4 py-3 border-t border-slate-700/50 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span className="text-xs text-slate-400">
+                Instructor Sharing Screen
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
+                <MessageSquare size={14} />
+              </button>
+              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
+                <Mic size={14} />
+              </button>
+              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
+                <Video size={14} />
+              </button>
+              <button className="p-1.5 rounded-lg bg-red-500/80 text-white hover:bg-red-500 transition-colors">
+                <ScreenShare size={14} />
+              </button>
+              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
+                <Settings size={14} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Decorative glow */}
+      <div className="absolute -inset-4 bg-primary/10 rounded-3xl blur-3xl -z-10" />
+    </motion.div>
+  );
+}
+
 function ModuleCard({
   module,
   index,
@@ -251,42 +344,42 @@ function ModuleCard({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-[#0d1117] border-[#ffffff12] p-0">
         {/* Image Section */}
         {moduleImage && (
-          <div className="relative w-full h-48 sm:h-64 rounded-t-lg overflow-hidden">
+          <div className="relative w-full rounded-t-lg overflow-hidden bg-[#0a0f1a]">
             <Image
               src={moduleImage}
               alt={module.title}
-              fill
-              className="object-cover"
+              width={1024}
+              height={576}
+              className="w-full h-auto object-contain"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0d1117] to-transparent" />
           </div>
         )}
 
-        <div className="px-6 pt-6 pb-8 space-y-6">
-          <DialogHeader className="space-y-3">
+        <div className="px-6 pt-5 pb-8 space-y-5">
+          <DialogHeader className="space-y-2">
             {/* Week Badge in Modal */}
             <div className="flex items-center gap-3">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-white text-sm font-medium">
-                <Calendar size={16} />
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-medium">
+                <Calendar size={14} />
                 {module.week}
               </div>
             </div>
 
-            <DialogTitle className="text-xl sm:text-2xl font-bold text-white">
+            <DialogTitle className="text-lg sm:text-xl font-bold text-white">
               {module.title}
             </DialogTitle>
 
-            <DialogDescription className="text-gray-400 text-sm sm:text-base leading-relaxed">
+            <DialogDescription className="text-gray-400 text-xs sm:text-sm leading-relaxed">
               {module.description}
             </DialogDescription>
           </DialogHeader>
 
           {/* Detailed Sub-modules */}
-          <div className="pt-5 border-t border-white/10">
-            <h4 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-5">
+          <div className="pt-4 border-t border-white/10">
+            <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-4">
               What You&apos;ll Learn
             </h4>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {module.subModules.map((subModule, subIndex) => {
                 const cleanModule = subModule.replace(/^\d+\.\s*/, "");
                 const parts = cleanModule.split(" - ");
@@ -296,7 +389,7 @@ function ModuleCard({
                 return (
                   <div
                     key={subIndex}
-                    className="text-gray-400 text-sm sm:text-base leading-relaxed"
+                    className="text-gray-400 text-xs sm:text-sm leading-relaxed"
                   >
                     {description ? (
                       <>
@@ -327,7 +420,7 @@ export default function DataEngineeringPage() {
         <Navbar />
 
         {/* Course-specific Hero Section */}
-        <section className="relative pt-[160px] pb-[200px] lg:pt-[280px] lg:pb-[250px] overflow-hidden">
+        <section className="relative pt-[160px] pb-[200px] lg:pt-[280px] lg:pb-[250px] flex flex-col justify-center overflow-hidden">
           {/* Layered Aceternity Backgrounds */}
           <Spotlight
             className="-top-40 left-0 md:-top-20 md:left-60"
@@ -338,14 +431,15 @@ export default function DataEngineeringPage() {
           {/* Sun Lamp Effect - positioned at bottom center */}
           <LampEffect className="opacity-80" fill="#2756f7" position="bottom" />
 
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex flex-col items-center">
-              {/* Text Content - Centered */}
+          <div className="container mx-auto px-4 sm:px-8 lg:px-20 relative z-10">
+            {/* Two column layout - reversed on mobile so video appears first */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-center gap-8 lg:gap-0">
+              {/* Text Content - Left side */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="max-w-4xl text-center"
+                className="flex-1 lg:max-w-none"
               >
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
                   <span className="relative flex h-2 w-2">
@@ -355,15 +449,15 @@ export default function DataEngineeringPage() {
                   3-Months Data Engineering Bootcamp
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
-                  <span className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl">
+                <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6 leading-[1.1]">
+                  <span className="text-3xl sm:text-4xl lg:text-4xl xl:text-5xl">
                     Data Engineering
                   </span>
                   <br />
                   <span className="text-primary">Zero-to-Hero program</span>
                 </h1>
 
-                <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
+                <p className="text-sm sm:text-base text-muted-foreground mb-4 leading-relaxed max-w-lg">
                   This intensive 3-month program transforms absolute beginners
                   into job-ready data engineers through hands-on projects and
                   industry-relevant skills. Master Python, SQL, Airflow, dbt,
@@ -375,19 +469,27 @@ export default function DataEngineeringPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.4 }}
-                  className="flex justify-center"
                 >
                   <HoverBorderGradient
-                    containerClassName="rounded-full"
+                    containerClassName="rounded-full w-fit"
                     as="a"
                     href="#course-details"
-                    className="h-14 px-10 text-lg dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
+                    className="h-12 px-8 text-lg text-white flex items-center space-x-2"
+                    innerStyle={{
+                      background:
+                        "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
+                    }}
                   >
                     <span>Curriculum</span>
-                    <ArrowRight size={20} />
+                    <ArrowRight size={18} />
                   </HoverBorderGradient>
                 </motion.div>
               </motion.div>
+
+              {/* Screen Share Mockup - Right side */}
+              <div className="flex-1 lg:flex-[1.5] flex justify-start lg:min-w-0">
+                <ScreenShareMockup />
+              </div>
             </div>
           </div>
         </section>
@@ -816,7 +918,7 @@ export default function DataEngineeringPage() {
             </motion.div>
 
             {/* Tools Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 max-w-[1200px] mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 max-w-[1100px] mx-auto place-items-center">
               {tools.map((tool, index) => {
                 const Icon = tool.icon;
                 return (
@@ -826,22 +928,13 @@ export default function DataEngineeringPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: index * 0.05 }}
-                    className="relative rounded-2xl border border-[#ffffff12] bg-[#0d1117] p-4 overflow-visible"
                   >
-                    {/* Subtle glow */}
-                    <div
-                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[0.5px] rounded-full"
-                      style={{
-                        background:
-                          "linear-gradient(90deg, transparent, #2756f7, transparent)",
-                      }}
-                    />
-                    <div className="bg-[#111827] rounded-xl p-6 flex flex-col items-center gap-4 border border-blue-500/20 hover:border-blue-500/40 transition-colors h-full">
+                    <TiltedToolCard>
                       <Icon size={40} className="text-primary" />
                       <span className="text-white text-sm sm:text-base font-medium text-center">
                         {tool.name}
                       </span>
-                    </div>
+                    </TiltedToolCard>
                   </motion.div>
                 );
               })}

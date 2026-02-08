@@ -2,6 +2,7 @@ import { Contact } from "@/components/sections/Contact";
 import { Courses } from "@/components/sections/Courses";
 import { Footer } from "@/components/sections/Footer";
 import { Hero } from "@/components/sections/Hero";
+import { JobReady } from "@/components/sections/JobReady";
 import { Navbar } from "@/components/sections/Navbar";
 import { WhyChoose } from "@/components/sections/WhyChoose";
 
@@ -16,6 +17,7 @@ export default function Home() {
         <Hero />
         <WhyChoose />
         <Courses />
+        <JobReady />
         <Contact />
         <Footer />
       </div>

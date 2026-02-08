@@ -2,6 +2,7 @@
 
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { motion } from "motion/react";
+import Image from "next/image";
 import {
   ArrowRight,
   MessageSquare,
@@ -10,17 +11,20 @@ import {
   ScreenShare,
   Settings,
 } from "lucide-react";
+import { BackgroundBeams } from "../ui/background-beams";
+import { LampEffect } from "../ui/lamp-effect";
+import { Spotlight } from "../ui/spotlight";
 
 const participants = [
-  { name: "Instructor", isInstructor: true },
-  { name: "Priya Sharma", isInstructor: false },
-  { name: "Rahul Verma", isInstructor: false },
-  { name: "Anita Patel", isInstructor: false },
-  { name: "Vikram Singh", isInstructor: false },
-  { name: "Neha Gupta", isInstructor: false },
-  { name: "Amit Kumar", isInstructor: false },
-  { name: "Kavya Reddy", isInstructor: false },
-  { name: "Arjun Mehta", isInstructor: false },
+  { name: "Instructor", isInstructor: true, image: "/video-call/vc_2.png" },
+  { name: "Rahul Verma", isInstructor: false, image: "/video-call/vc_1.png" },
+  { name: "Mei Chen", isInstructor: false, image: "/video-call/vc_3.png" },
+  { name: "Vikram Singh", isInstructor: false, image: "/video-call/vc_4.png" },
+  { name: "Soham Das", isInstructor: false, image: "/video-call/vc_5.png" },
+  { name: "Amit Kumar", isInstructor: false, image: "/video-call/vc_6.png" },
+  { name: "Priya Sharma", isInstructor: false, image: "/video-call/vc_7.png" },
+  { name: "Arjun Mehta", isInstructor: false, image: "/video-call/vc_8.png" },
+  { name: "Neha Gupta", isInstructor: false, image: "/video-call/vc_9.png" },
 ];
 
 function LiveSessionMockup() {
@@ -54,19 +58,13 @@ function LiveSessionMockup() {
                   key={index}
                   className="relative aspect-video rounded-lg overflow-hidden bg-linear-to-br from-slate-700 to-slate-800"
                 >
-                  {/* Placeholder avatar */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div
-                      className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white font-medium text-sm ${
-                        participant.isInstructor ? "bg-primary" : "bg-slate-600"
-                      }`}
-                    >
-                      {participant.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </div>
-                  </div>
+                  {/* Participant image */}
+                  <Image
+                    src={participant.image}
+                    alt={participant.name}
+                    fill
+                    className="object-cover"
+                  />
                   {/* Name badge */}
                   <div className="absolute bottom-1 left-1 right-1">
                     <span
@@ -126,6 +124,16 @@ function LiveSessionMockup() {
 export function Hero() {
   return (
     <section className="relative pt-[160px] pb-[200px] lg:pt-[280px] lg:pb-[250px] flex flex-col justify-center overflow-hidden">
+      {/* Layered Aceternity Backgrounds */}
+      <Spotlight
+        className="-top-40 left-0 md:-top-20 md:left-60"
+        fill="#2756f7"
+      />
+      <BackgroundBeams className="opacity-60" />
+
+      {/* Sun Lamp Effect - positioned at bottom center */}
+      <LampEffect className="opacity-80" fill="#2756f7" position="bottom" />
+
       <div className="container mx-auto px-4 sm:px-8 lg:px-20 relative z-10">
         {/* Two column layout - reversed on mobile so video appears first */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-center gap-8 lg:gap-0">
@@ -183,7 +191,7 @@ export function Hero() {
           </motion.div>
 
           {/* Live Session Mockup - Right side */}
-          <div className="flex-1 flex justify-start">
+          <div className="flex-1 lg:flex-[1.5] flex justify-start lg:min-w-0">
             <LiveSessionMockup />
           </div>
         </div>
