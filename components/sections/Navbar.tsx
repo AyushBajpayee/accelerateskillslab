@@ -3,11 +3,14 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Volume2, VolumeX } from "lucide-react";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const [isPlaying, setIsPlaying] = React.useState(false);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -17,7 +20,32 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  React.useEffect(() => {
+    const audio = new Audio("/audio/background-music.mp3");
+    audio.loop = true;
+    audio.volume = 0.4;
+    audioRef.current = audio;
+
+    return () => {
+      audio.pause();
+      audio.src = "";
+    };
+  }, []);
+
+  const toggleSound = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      audio.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
   return (
+    <>
     <nav
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-white/10",
@@ -54,7 +82,7 @@ export function Navbar() {
           </div>
 
           {/* Right Side - Button */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center">
             <Link href="/#courses" className="inline-block">
               <HoverBorderGradient
                 containerClassName="rounded-full hover:border-primary transition-colors duration-200"
@@ -68,5 +96,28 @@ export function Navbar() {
         </div>
       </div>
     </nav>
+
+    {/* Floating Sound Toggle - Fixed bottom right */}
+    <div className="group/sound fixed bottom-6 right-6 z-9999">
+      <HoverBorderGradient
+        containerClassName="rounded-full hover:border-primary transition-colors duration-200 shadow-lg shadow-black/20"
+        as="button"
+        className="w-11 h-11 sm:w-12 sm:h-12 dark:bg-black bg-white text-black dark:text-white flex items-center justify-center"
+        onClick={toggleSound}
+        aria-label={isPlaying ? "Sound Off" : "Sound On"}
+        animating={isPlaying}
+      >
+        {isPlaying ? (
+          <Volume2 className="w-5 h-5" />
+        ) : (
+          <VolumeX className="w-5 h-5" />
+        )}
+      </HoverBorderGradient>
+      {/* Tooltip */}
+      <span className="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/80 px-2.5 py-1 text-xs text-white opacity-0 transition-opacity duration-200 group-hover/sound:opacity-100">
+        {isPlaying ? "Sound Off" : "Sound On"}
+      </span>
+    </div>
+    </>
   );
 }

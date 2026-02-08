@@ -11,6 +11,7 @@ type HoverBorderGradientProps = {
   duration?: number;
   clockwise?: boolean;
   innerStyle?: React.CSSProperties;
+  animating?: boolean;
 } & Record<string, unknown>;
 
 export const HoverBorderGradient = ({
@@ -21,6 +22,7 @@ export const HoverBorderGradient = ({
   duration = 1,
   clockwise = true,
   innerStyle,
+  animating = true,
   ...otherProps
 }: HoverBorderGradientProps) => {
   const movingMap: Record<string, string> = {
@@ -44,12 +46,14 @@ export const HoverBorderGradient = ({
 
   // Continuously cycle through directions for smooth animation
   useEffect(() => {
+    if (!animating) return;
+
     const interval = setInterval(() => {
       setCurrentDirectionIndex((prev) => (prev + 1) % orderedDirections.length);
     }, duration * 1000); // Convert duration to milliseconds
 
     return () => clearInterval(interval);
-  }, [duration, orderedDirections.length]);
+  }, [duration, orderedDirections.length, animating]);
 
   const currentDirection = orderedDirections[currentDirectionIndex];
   const nextDirection =
@@ -75,18 +79,25 @@ export const HoverBorderGradient = ({
       >
         {children}
       </div>
-      <motion.div
-        className="absolute inset-0 z-0 opacity-100"
-        key={currentDirectionIndex} // Force re-render for smooth transition
-        initial={{ background: movingMap[currentDirection] }}
-        animate={{ background: movingMap[nextDirection] }}
-        transition={{
-          duration: duration,
-          ease: "linear",
-        }}
-      />
+      {animating ? (
+        <motion.div
+          className="absolute inset-0 z-0 opacity-100"
+          key={currentDirectionIndex} // Force re-render for smooth transition
+          initial={{ background: movingMap[currentDirection] }}
+          animate={{ background: movingMap[nextDirection] }}
+          transition={{
+            duration: duration,
+            ease: "linear",
+          }}
+        />
+      ) : (
+        <div className="absolute inset-0 z-0 opacity-0" />
+      )}
       <div
-        className="absolute inset-0 z-0 rounded-full opacity-30 blur-xl"
+        className={cn(
+          "absolute inset-0 z-0 rounded-full blur-xl transition-opacity duration-300",
+          animating ? "opacity-30" : "opacity-0"
+        )}
         style={{ background: highlight }}
       />
     </Component>
