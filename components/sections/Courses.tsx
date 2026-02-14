@@ -8,7 +8,7 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 const courses = [
   {
     id: "data-analytics",
-    category: "Course",
+    category: "Program",
     categoryColor: "bg-primary",
     categoryTextColor: "text-primary",
     categoryIcon: BookOpen,
@@ -21,7 +21,7 @@ const courses = [
   },
   {
     id: "data-engineering",
-    category: "Course",
+    category: "Program",
     categoryColor: "bg-primary",
     categoryTextColor: "text-primary",
     categoryIcon: Code,

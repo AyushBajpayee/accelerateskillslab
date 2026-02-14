@@ -103,7 +103,7 @@ const keyStats = [
 
 const course = {
   id: "data-analytics",
-  category: "Course",
+  category: "Program",
   categoryColor: "bg-green-500",
   categoryTextColor: "text-green-500",
   categoryIcon: BookOpen,
@@ -167,7 +167,7 @@ const modules = [
     week: "Week 5-6",
     title: "Data Cleaning, Preparation & EDA",
     description:
-      "Learn the critical skills that consume 60-80% of real analyst work—preparing messy data for analysis.",
+      "Learn the critical skills that consume 60-80% of real analyst work - preparing messy data for analysis.",
     lessons: 12,
     duration: "8 hr 23 min",
     subModules: [

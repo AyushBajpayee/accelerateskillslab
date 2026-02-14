@@ -161,7 +161,7 @@ export function Hero() {
             </h1>
 
             <p className="text-sm sm:text-base  text-muted-foreground mb-4 leading-relaxed max-w-lg">
-              Live, instructor-led bootcamps — not pre-recorded videos. Go from
+              Live, instructor-led bootcamps - not pre-recorded videos. Go from
               beginner to job-ready in 3 months with hands-on projects,
               mentorship, and placement support. Master dashboards and
               visualization tools, or build production-grade pipelines and cloud

@@ -112,7 +112,7 @@ const keyStats = [
 
 const course = {
   id: "data-engineering",
-  category: "Course",
+  category: "Program",
   categoryColor: "bg-orange-500",
   categoryTextColor: "text-orange-500",
   categoryIcon: Code,
@@ -666,7 +666,7 @@ export default function DataEngineeringPage() {
               <span className="text-white font-semibold">
                 1.25 million by 2027
               </span>
-              , with data engineers seeing a strong hiring rebound in 2025 —
+              , with data engineers seeing a strong hiring rebound in 2025 -
               led by BFSI (57% of roles) and concentrated in Bengaluru and
               Hyderabad.
             </motion.p>
