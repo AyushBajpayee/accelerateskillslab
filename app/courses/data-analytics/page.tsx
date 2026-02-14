@@ -4,7 +4,9 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Spotlight } from "@/components/ui/spotlight";
 import { LampEffect } from "@/components/ui/lamp-effect";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
+import { useState, useEffect, useId, useRef } from "react";
+import { useOutsideClick } from "@/hooks/use-outside-click";
 import {
   ArrowRight,
   Calendar,
@@ -20,14 +22,6 @@ import {
   Settings,
 } from "lucide-react";
 import Image from "next/image";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 import { BookOpen } from "lucide-react";
@@ -324,120 +318,222 @@ function ScreenShareMockup() {
   );
 }
 
-function ModuleCard({
+function CloseIcon() {
+  return (
+    <motion.svg
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.05 } }}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-4 w-4 text-white"
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M18 6l-12 12" />
+      <path d="M6 6l12 12" />
+    </motion.svg>
+  );
+}
+
+function ExpandedModuleCard({
   module,
-  index,
+  layoutId,
 }: {
   module: (typeof modules)[0];
-  index: number;
+  layoutId: string;
 }) {
   const moduleImage = moduleImages[module.week];
 
   return (
-    <Dialog>
-      <div className="relative bg-[#111827] rounded-2xl p-6 sm:p-8 border border-blue-500/30 hover:border-blue-500/50 transition-colors">
-        {/* Expand Button - Top Right */}
-        <DialogTrigger asChild>
-          <button
-            className="absolute top-4 right-4 p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-primary/50 transition-all group"
-            aria-label="Expand module details"
+    <motion.div
+      layoutId={layoutId}
+      className="w-full max-w-[800px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-[#0d1117] border border-[#ffffff12] sm:rounded-3xl overflow-hidden"
+    >
+      {/* Image Section */}
+      {moduleImage && (
+        <motion.div
+          layoutId={`image-${module.week}-${layoutId}`}
+          className="relative w-full overflow-hidden bg-[#0a0f1a]"
+        >
+          <Image
+            src={moduleImage}
+            alt={module.title}
+            width={1024}
+            height={576}
+            className="w-full h-auto object-contain"
+          />
+        </motion.div>
+      )}
+
+      <div className="px-6 pt-5 pb-8 space-y-5">
+        {/* Week Badge */}
+        <div className="flex items-center gap-3">
+          <motion.div
+            layoutId={`badge-${module.week}-${layoutId}`}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-medium"
           >
-            <Expand size={18} className="text-gray-400 group-hover:text-primary transition-colors" />
-          </button>
-        </DialogTrigger>
-
-        <div className="flex flex-col gap-4 pr-12">
-          {/* Week Badge */}
-          <div className="flex items-center gap-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-white text-sm font-medium">
-              <Calendar size={16} />
-              {module.week}
-            </div>
-          </div>
-
-          {/* Module Title */}
-          <h3 className="text-xl sm:text-2xl font-bold text-white">
-            {module.title}
-          </h3>
-
-          {/* Module Description */}
-          <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
-            {module.description}
-          </p>
+            <Calendar size={14} />
+            {module.week}
+          </motion.div>
         </div>
+
+        {/* Title */}
+        <motion.h3
+          layoutId={`title-${module.week}-${layoutId}`}
+          className="text-lg sm:text-xl font-bold text-white"
+        >
+          {module.title}
+        </motion.h3>
+
+        {/* Description */}
+        <motion.p
+          layoutId={`description-${module.week}-${layoutId}`}
+          className="text-gray-400 text-xs sm:text-sm leading-relaxed"
+        >
+          {module.description}
+        </motion.p>
+
+        {/* Detailed Sub-modules */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="pt-4 border-t border-white/10"
+        >
+          <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-4">
+            What You&apos;ll Learn
+          </h4>
+          <div className="space-y-3">
+            {module.subModules.map((subModule, subIndex) => {
+              const cleanModule = subModule.replace(/^\d+\.\s*/, "");
+              const parts = cleanModule.split(" - ");
+              const title = parts[0];
+              const description = parts.slice(1).join(" - ");
+
+              return (
+                <div
+                  key={subIndex}
+                  className="text-gray-400 text-xs sm:text-sm leading-relaxed"
+                >
+                  {description ? (
+                    <>
+                      <span className="font-semibold text-white">{title}</span>
+                      {" - " + description}
+                    </>
+                  ) : (
+                    <span className="font-semibold text-white">{title}</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
+function ModuleCard({
+  module,
+  index,
+  onClick,
+  layoutId,
+}: {
+  module: (typeof modules)[0];
+  index: number;
+  onClick: () => void;
+  layoutId: string;
+}) {
+  return (
+    <motion.div
+      layoutId={layoutId}
+      onClick={onClick}
+      className="relative bg-[#111827] rounded-2xl p-6 sm:p-8 border border-blue-500/30 hover:border-blue-500/50 transition-colors cursor-pointer"
+      role="button"
+      aria-label={`View details about ${module.title}`}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+    >
+      {/* Expand Button - Top Right */}
+      <div
+        className="absolute top-4 right-4 p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-primary/50 transition-all group"
+        aria-hidden="true"
+      >
+        <Expand size={18} className="text-gray-400 group-hover:text-primary transition-colors" />
       </div>
 
-      {/* Modal Content */}
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-[#0d1117] border-[#ffffff12] p-0">
-        {/* Image Section */}
-        {moduleImage && (
-          <div className="relative w-full rounded-t-lg overflow-hidden bg-[#0a0f1a]">
-            <Image
-              src={moduleImage}
-              alt={module.title}
-              width={1024}
-              height={576}
-              className="w-full h-auto object-contain"
-            />
-          </div>
-        )}
-
-        <div className="px-6 pt-5 pb-8 space-y-5">
-          <DialogHeader className="space-y-2">
-            {/* Week Badge in Modal */}
-            <div className="flex items-center gap-3">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-medium">
-                <Calendar size={14} />
-                {module.week}
-              </div>
-            </div>
-
-            <DialogTitle className="text-lg sm:text-xl font-bold text-white">
-              {module.title}
-            </DialogTitle>
-
-            <DialogDescription className="text-gray-400 text-xs sm:text-sm leading-relaxed">
-              {module.description}
-            </DialogDescription>
-          </DialogHeader>
-
-          {/* Detailed Sub-modules */}
-          <div className="pt-4 border-t border-white/10">
-            <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-4">
-              What You&apos;ll Learn
-            </h4>
-            <div className="space-y-3">
-              {module.subModules.map((subModule, subIndex) => {
-                const cleanModule = subModule.replace(/^\d+\.\s*/, "");
-                const parts = cleanModule.split(" - ");
-                const title = parts[0];
-                const description = parts.slice(1).join(" - ");
-
-                return (
-                  <div
-                    key={subIndex}
-                    className="text-gray-400 text-xs sm:text-sm leading-relaxed"
-                  >
-                    {description ? (
-                      <>
-                        <span className="font-semibold text-white">{title}</span>
-                        {" - " + description}
-                      </>
-                    ) : (
-                      <span className="font-semibold text-white">{title}</span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+      <div className="flex flex-col gap-4 pr-12">
+        {/* Week Badge */}
+        <div className="flex items-center gap-3">
+          <motion.div
+            layoutId={`badge-${module.week}-${layoutId}`}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-white text-sm font-medium"
+          >
+            <Calendar size={16} />
+            {module.week}
+          </motion.div>
         </div>
-      </DialogContent>
-    </Dialog>
+
+        {/* Module Title */}
+        <motion.h3
+          layoutId={`title-${module.week}-${layoutId}`}
+          className="text-xl sm:text-2xl font-bold text-white"
+        >
+          {module.title}
+        </motion.h3>
+
+        {/* Module Description */}
+        <motion.p
+          layoutId={`description-${module.week}-${layoutId}`}
+          className="text-gray-400 text-sm sm:text-base leading-relaxed"
+        >
+          {module.description}
+        </motion.p>
+      </div>
+    </motion.div>
   );
 }
 
 export default function DataAnalyticsPage() {
+  const [activeModule, setActiveModule] = useState<
+    (typeof modules)[number] | null
+  >(null);
+  const id = useId();
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setActiveModule(null);
+      }
+    }
+
+    if (activeModule) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [activeModule]);
+
+  useOutsideClick(modalRef as React.RefObject<HTMLDivElement>, () =>
+    setActiveModule(null)
+  );
+
   return (
     <main className="relative min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary">
       {/* Grid overlay for technical aesthetic - Applied to all sections */}
@@ -858,6 +954,45 @@ export default function DataAnalyticsPage() {
               </h2>
             </motion.div>
 
+            {/* Modal Overlay */}
+            <AnimatePresence>
+              {activeModule && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+                />
+              )}
+            </AnimatePresence>
+
+            {/* Expanded Modal */}
+            <AnimatePresence>
+              {activeModule && (
+                <div className="fixed inset-0 grid place-items-center z-[101] p-4">
+                  {/* Close Button (Mobile) */}
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0, transition: { duration: 0.05 } }}
+                    className="absolute top-4 right-4 lg:hidden flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-full h-10 w-10 border border-white/20 hover:bg-white/20 transition-colors z-[102]"
+                    onClick={() => setActiveModule(null)}
+                    aria-label="Close modal"
+                  >
+                    <CloseIcon />
+                  </motion.button>
+
+                  {/* Expanded Card */}
+                  <div ref={modalRef} role="dialog" aria-modal="true">
+                    <ExpandedModuleCard
+                      module={activeModule}
+                      layoutId={`module-${activeModule.week}-${id}`}
+                    />
+                  </div>
+                </div>
+              )}
+            </AnimatePresence>
+
             {/* Timeline Container */}
             <div className="relative max-w-[1200px] mx-auto">
               {/* Dashed timeline line — z-0 so it renders behind the cards, extends above/below cards */}
@@ -902,7 +1037,12 @@ export default function DataAnalyticsPage() {
                       <div className="absolute left-[11px] top-8 w-[10px] h-[10px] rounded-full bg-primary border-2 border-[#0d1117] z-20 lg:hidden" />
 
                       {/* Module */}
-                      <ModuleCard module={module} index={index} />
+                      <ModuleCard
+                        module={module}
+                        index={index}
+                        onClick={() => setActiveModule(module)}
+                        layoutId={`module-${module.week}-${id}`}
+                      />
                     </motion.div>
                   );
                 })}
