@@ -3,11 +3,13 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Volume2, VolumeX } from "lucide-react";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
@@ -83,13 +85,13 @@ export function Navbar() {
 
           {/* Right Side - Button */}
           <div className="flex items-center">
-            <Link href="/#courses" className="inline-block">
+            <Link href={`${pathname}#contact`} className="inline-block">
               <HoverBorderGradient
                 containerClassName="rounded-full hover:border-primary transition-colors duration-200"
                 as="div"
                 className="px-5 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base font-medium dark:bg-black bg-white text-black dark:text-white flex items-center justify-center"
               >
-                Find Your Program
+                Contact Us
               </HoverBorderGradient>
             </Link>
           </div>

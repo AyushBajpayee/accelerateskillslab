@@ -38,11 +38,11 @@ const formSchema = z.object({
     ),
   course: z
     .string()
-    .min(1, "Please select a course")
+    .min(1, "Please select a program")
     .refine(
       (val) => ["data-analytics", "data-engineering", "all"].includes(val),
       {
-        message: "Please select a course",
+        message: "Please select a program",
       },
     ),
   message: z
@@ -139,7 +139,7 @@ export function Contact() {
       // Format course value for better readability
       const courseDisplay =
         data.course === "all"
-          ? "All Courses (Data Analytics & Data Engineering)"
+          ? "All Programs (Data Analytics & Data Engineering)"
           : data.course === "data-analytics"
             ? "Data Analytics: Zero to Hero"
             : "Data Engineering Zero to Hero";
@@ -525,7 +525,7 @@ export function Contact() {
                       htmlFor="course"
                       className="text-sm font-medium text-gray-300"
                     >
-                      Course Interested <span className="text-red-400">*</span>
+                      Program Interested <span className="text-red-400">*</span>
                     </label>
                     <Select
                       id="course"
@@ -540,8 +540,8 @@ export function Contact() {
                           : ""
                       }
                     >
-                      <option value="">Select a course</option>
-                      <option value="all">All Courses</option>
+                      <option value="">Select a program</option>
+                      <option value="all">All Programs</option>
                       <option value="data-analytics">
                         Data Analytics: Zero to Hero
                       </option>
