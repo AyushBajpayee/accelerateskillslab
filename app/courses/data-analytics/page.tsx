@@ -231,11 +231,13 @@ const modules = [
 
 // Module images mapping
 const moduleImages: Record<string, string> = {
-  "Week 1": "/courses/data-engineering/week1_4.png",
-  "Week 2": "/courses/data-engineering/week5_7.png",
-  "Week 3-4": "/courses/data-engineering/week8_11.png",
-  "Week 5-6": "/courses/data-engineering/week12_15.png",
-  "Week 6-7": "/courses/data-engineering/week16_20.png",
+  "Week 1": "/courses/data-analytics/da_week_1.png",
+  "Week 2": "/courses/data-analytics/da_week_2.png",
+  "Week 3-4": "/courses/data-analytics/da_week3_4.png",
+  "Week 5-6": "/courses/data-analytics/da_week5_6.png",
+  "Week 6-7": "/courses/data-analytics/da_week6_7.png",
+  "Week 7-8": "/courses/data-analytics/da_week7_8.png",
+  "Week 9-12": "/courses/data-analytics/da_week9_12.png",
 };
 
 function ScreenShareMockup() {

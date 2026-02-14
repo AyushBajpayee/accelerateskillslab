@@ -49,7 +49,7 @@ const items: JobReadyCard[] = [
     title: "Interview Preparation",
     subtitle: "Precision Interview Mentorship",
     expandedDescription:
-      "Master the art of the technical interview with coaching from the people who actually hire. We go beyond generic mock sessions to provide surgical feedback on your problem-solving logic and communication style. By practicing with our in-house recruitment experts, you'll learn the \"insider\" triggers that turn a standard interview into a confirmed job offer.",
+      'Master the art of the technical interview with coaching from the people who actually hire. We go beyond generic mock sessions to provide surgical feedback on your problem-solving logic and communication style. By practicing with our in-house recruitment experts, you\'ll learn the "insider" triggers that turn a standard interview into a confirmed job offer.',
     accentColor: "text-violet-400",
     accentBg: "bg-violet-500/15",
     imageSrc: "/job-ready/job_1.png",
@@ -64,7 +64,7 @@ const items: JobReadyCard[] = [
   },
   {
     title: "Placement Assistance",
-    subtitle: "The \"Accelerated Entry\" Approach",
+    subtitle: 'The "Accelerated Entry" Approach',
     expandedDescription:
       "Your first career move shouldn't be a guessing game. We act as your personal career radar, scouting real-time job leads and market demands specifically suited for your skill level. By providing you with direct, verified opportunities from our recruitment network, we eliminate the noise of generic job portals and put you on the fast track to a confirmed offer.",
     accentColor: "text-sky-400",
@@ -81,12 +81,13 @@ const items: JobReadyCard[] = [
   },
   {
     title: "Our Dual-Mission Framework",
-    subtitle: "ASL bridges the \"Last-Mile Gap\" with focused technical upskilling and strategic recruitment solutions.",
+    subtitle:
+      'ASL bridges the "Last-Mile Gap" with focused technical upskilling and strategic recruitment solutions.',
     expandedDescription:
       "For the Candidate: Our Instructor-Led Training (ILT) is designed to stress-test your logic, refine your technical DNA, and ensure you are Day-One ready for the global data economy.\n\nFor the Enterprise: We act as your internal talent factory. By leveraging our in-house HR wing and technical SMEs, we align our trainees and specialized external talent with your specific tech stack and business requirements.",
     accentColor: "text-emerald-400",
     accentBg: "bg-emerald-500/15",
-    imageSrc: "/job-ready/job_1.png",
+    imageSrc: "/job-ready/job_4.png",
     benefits: [
       "Instructor-Led Training (ILT)",
       "Day-One readiness for global market",
@@ -314,7 +315,7 @@ export function JobReady() {
   }, [active]);
 
   useOutsideClick(modalRef as React.RefObject<HTMLDivElement>, () =>
-    setActive(null)
+    setActive(null),
   );
 
   return (
