@@ -89,7 +89,12 @@ export function Contact() {
 
   // Execute hCaptcha challenge when captcha is loaded and form is submitted
   useEffect(() => {
-    if (pendingFormData && isCaptchaLoaded && hCaptchaRef.current && !isExecutingCaptchaRef.current) {
+    if (
+      pendingFormData &&
+      isCaptchaLoaded &&
+      hCaptchaRef.current &&
+      !isExecutingCaptchaRef.current
+    ) {
       // Call execute() to trigger challenge directly
       const timer = setTimeout(async () => {
         try {
@@ -244,25 +249,38 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="relative py-20 lg:py-32">
+    <section id="contact" className="relative py-10 lg:py-20">
       <div className="container mx-auto px-4 sm:px-8 lg:px-20">
-        {/* Centered Heading */}
-        <motion.div
+        {/* Section Heading */}
+        <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="text-3xl font-regular sm:text-4xl lg:text-5xl text-center mb-4"
         >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
-            Ready to start your{" "}
-            <span className="text-primary">zero-to-hero</span> journey?
-          </h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Get in touch to learn more about our 3-month intensive bootcamp
-            programs. We'll help you choose the right path for your career.
-          </p>
-        </motion.div>
+          <span className="font-bold">Ready to start</span>{" "}
+          <span
+            className="italic"
+            style={{ fontFamily: '"IBM Plex Serif", serif' }}
+          >
+            your
+          </span>{" "}
+          <span className="text-primary font-bold">Zero-to-Hero</span>{" "}
+          <span className="font-bold">journey?</span>
+        </motion.h2>
+
+        {/* Sub-heading */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
+          className="text-base sm:text-lg lg:text-xl text-muted-foreground text-center mb-14 lg:mb-20 max-w-3xl mx-auto"
+        >
+          Get in touch to learn more about our 3-month intensive bootcamp
+          programs. We&apos;ll help you choose the right path for your career.
+        </motion.p>
 
         {/* Parent Container with Border */}
         <motion.div
@@ -270,7 +288,7 @@ export function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="relative mx-auto w-full max-w-2xl rounded-[32px] border border-[#ffffff12] bg-[#0d1117] overflow-visible"
+          className="relative p-3 sm:p-4 md:p-5 lg:p-6 mx-auto w-full max-w-2xl rounded-3xl md:rounded-[32px] border border-[#ffffff12] bg-[#0d1117] overflow-visible"
         >
           {/* Blue Highlighter Glow - Bottom */}
           <div
@@ -282,16 +300,15 @@ export function Contact() {
             }}
           />
 
-          <div className="p-4 sm:p-6">
-            {/* Form Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-[#111827] rounded-2xl p-4 sm:p-8 border border-white/5 w-full max-w-2xl mx-auto"
-            >
-              <h3 className="text-2xl font-bold text-white mb-6">
+          {/* Form Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="bg-[#111827] rounded-xl md:rounded-2xl px-4 py-4 sm:px-5 sm:py-5 md:p-6 lg:p-8 border border-white/5"
+          >
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3 md:mb-4">
                 Reach out to us
               </h3>
 
@@ -299,7 +316,7 @@ export function Contact() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-12"
+                  className="text-center py-8 md:py-12"
                   role="status"
                   aria-live="polite"
                   aria-atomic="true"
@@ -318,7 +335,7 @@ export function Contact() {
               ) : (
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="space-y-4"
+                  className="space-y-3 sm:space-y-4"
                   noValidate
                   onChange={() => {
                     // Clear error message when user starts interacting with form
@@ -346,7 +363,7 @@ export function Contact() {
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-lg"
+                      className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 sm:p-4 rounded-lg"
                       role="alert"
                       aria-live="assertive"
                     >
@@ -370,11 +387,11 @@ export function Contact() {
                   )}
 
                   {/* Name and Email Row */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <label
                         htmlFor="name"
-                        className="text-sm font-medium text-gray-300"
+                        className="text-xs md:text-sm font-medium text-gray-300"
                       >
                         Name <span className="text-red-400">*</span>
                       </label>
@@ -396,7 +413,7 @@ export function Contact() {
                       {errors.name && (
                         <p
                           id="name-error"
-                          className="text-sm text-red-400 mt-1"
+                          className="text-xs md:text-sm text-red-400 mt-0.5 sm:mt-1"
                           role="alert"
                         >
                           {errors.name.message}
@@ -404,10 +421,10 @@ export function Contact() {
                       )}
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <label
                         htmlFor="email"
-                        className="text-sm font-medium text-gray-300"
+                        className="text-xs md:text-sm font-medium text-gray-300"
                       >
                         Email <span className="text-red-400">*</span>
                       </label>
@@ -429,7 +446,7 @@ export function Contact() {
                       {errors.email && (
                         <p
                           id="email-error"
-                          className="text-sm text-red-400 mt-1"
+                          className="text-xs md:text-sm text-red-400 mt-0.5 sm:mt-1"
                           role="alert"
                         >
                           {errors.email.message}
@@ -439,10 +456,10 @@ export function Contact() {
                   </div>
 
                   {/* Phone Field - Unified Input with Country Code */}
-                  <div className="space-y-2">
+                  <div className="space-y-1.5 sm:space-y-2">
                     <label
                       htmlFor="phoneNumber"
-                      className="text-sm font-medium text-gray-300"
+                      className="text-xs md:text-sm font-medium text-gray-300"
                     >
                       Phone <span className="text-red-400">*</span>
                     </label>
@@ -458,7 +475,7 @@ export function Contact() {
                       {/* Country Code Selector - custom display with native select */}
                       <div className="relative h-full flex items-center rounded-l-md hover:bg-primary/10 transition-colors cursor-pointer">
                         {/* Visible display showing only flag + code */}
-                        <span className="pl-3 pr-1 text-sm pointer-events-none">
+                        <span className="pl-3 pr-1 text-xs sm:text-sm pointer-events-none whitespace-nowrap">
                           {(() => {
                             const selectedCountry = countryCodes.find(
                               (c) => c.dialCode === watch("countryCode"),
@@ -506,13 +523,13 @@ export function Contact() {
                               .slice(0, 10);
                           },
                         })}
-                        className="flex-1 h-full bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground pr-3"
+                        className="flex-1 h-full bg-transparent border-none outline-none text-xs sm:text-sm text-foreground placeholder:text-muted-foreground pr-3"
                       />
                     </div>
 
                     {/* Error messages */}
                     {(errors.countryCode || errors.phoneNumber) && (
-                      <p className="text-sm text-red-400 mt-1" role="alert">
+                      <p className="text-xs md:text-sm text-red-400 mt-0.5 sm:mt-1" role="alert">
                         {errors.countryCode?.message ||
                           errors.phoneNumber?.message}
                       </p>
@@ -520,10 +537,10 @@ export function Contact() {
                   </div>
 
                   {/* Course Selection */}
-                  <div className="space-y-2">
+                  <div className="space-y-1.5 sm:space-y-2">
                     <label
                       htmlFor="course"
-                      className="text-sm font-medium text-gray-300"
+                      className="text-xs md:text-sm font-medium text-gray-300"
                     >
                       Program Interested <span className="text-red-400">*</span>
                     </label>
@@ -552,7 +569,7 @@ export function Contact() {
                     {errors.course && (
                       <p
                         id="course-error"
-                        className="text-sm text-red-400 mt-1"
+                        className="text-xs md:text-sm text-red-400 mt-0.5 sm:mt-1"
                         role="alert"
                       >
                         {errors.course.message}
@@ -561,10 +578,10 @@ export function Contact() {
                   </div>
 
                   {/* Message Field */}
-                  <div className="space-y-2">
+                  <div className="space-y-1.5 sm:space-y-2">
                     <label
                       htmlFor="message"
-                      className="text-sm font-medium text-gray-300"
+                      className="text-xs md:text-sm font-medium text-gray-300"
                     >
                       Message{" "}
                       <span className="text-gray-500 text-xs">(optional)</span>
@@ -573,7 +590,7 @@ export function Contact() {
                       id="message"
                       placeholder="Enter your message (optional)"
                       maxLength={1001}
-                      className={`min-h-[100px] ${
+                      className={`min-h-[80px] md:min-h-[100px] ${
                         errors.message
                           ? "border-red-500 focus-visible:ring-red-500/50"
                           : ""
@@ -587,7 +604,7 @@ export function Contact() {
                     {errors.message && (
                       <p
                         id="message-error"
-                        className="text-sm text-red-400 mt-1"
+                        className="text-xs md:text-sm text-red-400 mt-0.5 sm:mt-1"
                         role="alert"
                       >
                         {errors.message.message}
@@ -596,10 +613,10 @@ export function Contact() {
                   </div>
 
                   {/* Submit Button */}
-                  <div className="space-y-2">
+                  <div className="space-y-1.5 sm:space-y-2">
                     <Button
                       type="submit"
-                      className="w-full h-12"
+                      className="w-full h-10 md:h-12 text-sm md:text-base"
                       disabled={isSubmitting || isVerifying}
                     >
                       {isVerifying ? (
@@ -684,8 +701,7 @@ export function Contact() {
                   />
                 </form>
               )}
-            </motion.div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

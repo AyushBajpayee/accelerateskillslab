@@ -4,9 +4,9 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Spotlight } from "@/components/ui/spotlight";
 import { LampEffect } from "@/components/ui/lamp-effect";
-import { motion, AnimatePresence } from "motion/react";
-import { useState, useEffect, useId, useRef } from "react";
-import { useOutsideClick } from "@/hooks/use-outside-click";
+import { motion } from "motion/react";
+import { useState, useEffect, useRef, useCallback, useId } from "react";
+import { ExpandableCardModal } from "@/components/ui/expandable-card-modal";
 import {
   ArrowRight,
   Calendar,
@@ -27,7 +27,13 @@ import { Footer } from "@/components/sections/Footer";
 import { BookOpen } from "lucide-react";
 import Link from "next/link";
 import { TiltedToolCard } from "@/components/ui/TiltedToolCard";
-import { SiPython, SiPandas, SiNumpy, SiTableau, SiGithub } from "react-icons/si";
+import {
+  SiPython,
+  SiPandas,
+  SiNumpy,
+  SiTableau,
+  SiGithub,
+} from "react-icons/si";
 import { IconType } from "react-icons";
 import {
   BarChart,
@@ -43,7 +49,10 @@ import {
 } from "recharts";
 import { TrendingUp, IndianRupee, Briefcase } from "lucide-react";
 
-const tools: { name: string; icon: IconType | React.ComponentType<{ size?: number; className?: string }> }[] = [
+const tools: {
+  name: string;
+  icon: IconType | React.ComponentType<{ size?: number; className?: string }>;
+}[] = [
   { name: "Microsoft Excel", icon: Table },
   { name: "Python", icon: SiPython },
   { name: "Pandas", icon: SiPandas },
@@ -59,12 +68,32 @@ const tools: { name: string; icon: IconType | React.ComponentType<{ size?: numbe
 // Real salary data by career level - India (Sources: AmbitionBox, Glassdoor India, Analytics India Mag 2024-2025)
 const salaryByLevel = [
   { level: "Entry Level", shortLabel: "Entry", salary: 4, years: "0-1 yr" },
-  { level: "Junior Analyst", shortLabel: "Junior", salary: 6.5, years: "1-3 yrs" },
+  {
+    level: "Junior Analyst",
+    shortLabel: "Junior",
+    salary: 6.5,
+    years: "1-3 yrs",
+  },
   { level: "Mid-Career", shortLabel: "Mid", salary: 10, years: "4-6 yrs" },
-  { level: "Senior Analyst", shortLabel: "Senior", salary: 15, years: "7-9 yrs" },
+  {
+    level: "Senior Analyst",
+    shortLabel: "Senior",
+    salary: 15,
+    years: "7-9 yrs",
+  },
   { level: "Lead Analyst", shortLabel: "Lead", salary: 20, years: "10+ yrs" },
-  { level: "Analytics Manager", shortLabel: "Manager", salary: 26, years: "Mgmt" },
-  { level: "Director Analytics", shortLabel: "Director", salary: 50, years: "Director" },
+  {
+    level: "Analytics Manager",
+    shortLabel: "Manager",
+    salary: 26,
+    years: "Mgmt",
+  },
+  {
+    level: "Director Analytics",
+    shortLabel: "Director",
+    salary: 50,
+    years: "Director",
+  },
 ];
 
 // India Data Analytics market size growth (Sources: IMARC Group, Grand View Research — base $2.6B in 2024, ~27% CAGR)
@@ -320,30 +349,6 @@ function ScreenShareMockup() {
   );
 }
 
-function CloseIcon() {
-  return (
-    <motion.svg
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0, transition: { duration: 0.05 } }}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4 text-white"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M18 6l-12 12" />
-      <path d="M6 6l12 12" />
-    </motion.svg>
-  );
-}
-
 function ExpandedModuleCard({
   module,
   layoutId,
@@ -356,7 +361,7 @@ function ExpandedModuleCard({
   return (
     <motion.div
       layoutId={layoutId}
-      className="w-full max-w-[800px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-[#0d1117] border border-[#ffffff12] sm:rounded-3xl overflow-hidden"
+      className="w-full max-w-[800px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-[#0d1117] border border-[#ffffff12] rounded-2xl sm:rounded-3xl overflow-hidden"
     >
       {/* Image Section */}
       {moduleImage && (
@@ -473,7 +478,10 @@ function ModuleCard({
         className="absolute top-4 right-4 p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-primary/50 transition-all group"
         aria-hidden="true"
       >
-        <Expand size={18} className="text-gray-400 group-hover:text-primary transition-colors" />
+        <Expand
+          size={18}
+          className="text-gray-400 group-hover:text-primary transition-colors"
+        />
       </div>
 
       <div className="flex flex-col gap-4 pr-12">
@@ -508,33 +516,88 @@ function ModuleCard({
   );
 }
 
+const CHART_COUNT = 2;
+const CHART_AUTO_SCROLL_INTERVAL = 2500;
+const CHART_AUTO_SCROLL_RESUME_DELAY = 3000;
+
 export default function DataAnalyticsPage() {
   const [activeModule, setActiveModule] = useState<
     (typeof modules)[number] | null
   >(null);
   const id = useId();
-  const modalRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setActiveModule(null);
-      }
-    }
-
-    if (activeModule) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [activeModule]);
-
-  useOutsideClick(modalRef as React.RefObject<HTMLDivElement>, () =>
-    setActiveModule(null)
+  /* ── Chart carousel state (mobile) ── */
+  const chartCarouselRef = useRef<HTMLDivElement>(null);
+  const [chartActiveIndex, setChartActiveIndex] = useState(0);
+  const chartAutoScrollPaused = useRef(false);
+  const chartResumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
   );
+
+  const scrollToChartIndex = useCallback((index: number) => {
+    const container = chartCarouselRef.current;
+    if (!container) return;
+    const child = container.children[index] as HTMLElement | undefined;
+    if (child) {
+      container.scrollTo({
+        left: child.offsetLeft - container.offsetLeft,
+        behavior: "smooth",
+      });
+    }
+  }, []);
+
+  /* Track active chart via scroll position */
+  useEffect(() => {
+    const container = chartCarouselRef.current;
+    if (!container) return;
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft;
+      const containerWidth = container.clientWidth;
+      const slideWidth = containerWidth + 16;
+      const index = Math.round(scrollLeft / slideWidth);
+      setChartActiveIndex(Math.min(Math.max(0, index), CHART_COUNT - 1));
+    };
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  /* Auto-scroll charts on mobile */
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (chartAutoScrollPaused.current) return;
+      if (window.innerWidth >= 1024) return;
+      setChartActiveIndex((prev) => {
+        const next = (prev + 1) % CHART_COUNT;
+        scrollToChartIndex(next);
+        return next;
+      });
+    }, CHART_AUTO_SCROLL_INTERVAL);
+    return () => clearInterval(interval);
+  }, [scrollToChartIndex]);
+
+  /* Pause auto-scroll on touch, resume after delay */
+  useEffect(() => {
+    const container = chartCarouselRef.current;
+    if (!container) return;
+    const pause = () => {
+      chartAutoScrollPaused.current = true;
+      if (chartResumeTimeoutRef.current)
+        clearTimeout(chartResumeTimeoutRef.current);
+    };
+    const resume = () => {
+      chartResumeTimeoutRef.current = setTimeout(() => {
+        chartAutoScrollPaused.current = false;
+      }, CHART_AUTO_SCROLL_RESUME_DELAY);
+    };
+    container.addEventListener("touchstart", pause, { passive: true });
+    container.addEventListener("touchend", resume, { passive: true });
+    return () => {
+      container.removeEventListener("touchstart", pause);
+      container.removeEventListener("touchend", resume);
+      if (chartResumeTimeoutRef.current)
+        clearTimeout(chartResumeTimeoutRef.current);
+    };
+  }, []);
 
   return (
     <main className="relative min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary">
@@ -543,7 +606,7 @@ export default function DataAnalyticsPage() {
 
       <div className="relative z-10">
         {/* Course-specific Hero Section */}
-        <section className="relative pt-[160px] pb-[200px] lg:pt-[280px] lg:pb-[250px] flex flex-col justify-center overflow-hidden">
+        <section className="relative py-[160px] lg:min-h-[80vh] lg:pt-24 lg:pb-16 flex flex-col justify-center overflow-hidden">
           {/* Layered Aceternity Backgrounds */}
           <Spotlight
             className="-top-40 left-0 md:-top-20 md:left-60"
@@ -598,7 +661,7 @@ export default function DataAnalyticsPage() {
                     containerClassName="rounded-full w-fit"
                     as="a"
                     href="#course-details"
-                    className="h-12 px-8 text-lg text-white flex items-center space-x-2"
+                    className="px-5 py-2.5 sm:px-7 text-sm font-medium text-white flex items-center space-x-2"
                     innerStyle={{
                       background:
                         "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
@@ -619,35 +682,38 @@ export default function DataAnalyticsPage() {
         </section>
 
         {/* Data Analytics as a Career Section */}
-        <section className="relative py-16 lg:py-24">
+        <section className="relative py-10 lg:py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {/* Section Heading */}
-            <motion.div
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-16"
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="text-3xl sm:text-4xl lg:text-5xl text-center mb-4"
             >
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">
-                <span className="font-bold">Data Analytics as a Career</span>
-                <br />
-                <span
-                  className="italic font-normal text-xl sm:text-2xl lg:text-3xl xl:text-4xl"
-                  style={{
-                    fontFamily:
-                      '"IBM Plex Serif", "IBM Plex Serif Placeholder", serif',
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  A high-growth career{" "}
-                  <span className="text-primary">backed by real numbers.</span>
-                </span>
-              </h2>
-            </motion.div>
+              <span className="font-bold">Data Analytics</span>{" "}
+              <span
+                className="italic"
+                style={{ fontFamily: '"IBM Plex Serif", serif' }}
+              >
+                as a
+              </span>{" "}
+              <span className="text-primary font-bold">Career</span>
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
+              className="text-base sm:text-lg lg:text-xl text-muted-foreground text-center mb-10 lg:mb-14 max-w-3xl mx-auto"
+            >
+              A high-growth career backed by real numbers.
+            </motion.p>
 
             {/* Key Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-[1000px] mx-auto mb-14">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mobile-m:gap-4 sm:gap-6 max-w-[1000px] mx-auto mb-10 lg:mb-14">
               {keyStats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
@@ -657,7 +723,7 @@ export default function DataAnalyticsPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
-                    className="relative rounded-2xl border border-[#ffffff12] bg-[#0d1117] p-4 overflow-visible"
+                    className={`relative rounded-xl sm:rounded-2xl border border-[#ffffff12] bg-[#0d1117] p-2 mobile-m:p-2.5 sm:p-4 overflow-visible ${index === keyStats.length - 1 ? "col-span-2 max-w-[60%] mx-auto sm:col-span-1 sm:max-w-none" : ""}`}
                   >
                     <div
                       className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[0.5px] rounded-full"
@@ -666,15 +732,18 @@ export default function DataAnalyticsPage() {
                           "linear-gradient(90deg, transparent, #2756f7, transparent)",
                       }}
                     />
-                    <div className="bg-[#111827] rounded-xl p-6 flex flex-col items-center gap-2 border border-blue-500/20 hover:border-blue-500/40 transition-colors h-full">
-                      <Icon size={28} className="text-primary mb-1" />
-                      <span className="text-3xl sm:text-4xl font-bold text-white">
+                    <div className="bg-[#111827] rounded-lg sm:rounded-xl p-3 mobile-m:p-4 sm:p-6 flex flex-col items-center gap-1 sm:gap-2 border border-blue-500/20 hover:border-blue-500/40 transition-colors h-full">
+                      <Icon
+                        size={28}
+                        className="text-primary mb-0.5 sm:mb-1 w-5! h-5! sm:w-7! sm:h-7!"
+                      />
+                      <span className="text-xl mobile-m:text-2xl sm:text-4xl font-bold text-white">
                         {stat.value}
                       </span>
-                      <span className="text-white text-sm sm:text-base font-medium text-center">
+                      <span className="text-white text-xs mobile-m:text-sm sm:text-base font-medium text-center">
                         {stat.label}
                       </span>
-                      <span className="text-gray-500 text-xs text-center">
+                      <span className="text-gray-500 text-[10px] mobile-m:text-xs sm:text-xs text-center">
                         {stat.sublabel}
                       </span>
                     </div>
@@ -689,7 +758,7 @@ export default function DataAnalyticsPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-gray-400 text-base sm:text-lg leading-relaxed max-w-3xl mx-auto text-center mb-14"
+              className="text-gray-400 text-sm sm:text-lg leading-relaxed max-w-3xl mx-auto text-center mb-10 lg:mb-14"
             >
               Data analytics is one of the fastest-growing career fields in
               India. NASSCOM reports a{" "}
@@ -701,15 +770,18 @@ export default function DataAnalyticsPage() {
               million by 2027.
             </motion.p>
 
-            {/* Charts Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-[1200px] mx-auto">
+            {/* Charts Grid / Mobile Carousel */}
+            <div
+              ref={chartCarouselRef}
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide lg:grid lg:grid-cols-2 lg:gap-6 lg:overflow-visible lg:snap-none max-w-[1200px] mx-auto"
+            >
               {/* Chart 1: Salary by Career Level */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="relative rounded-[32px] border border-[#ffffff12] bg-[#0d1117] p-4 overflow-visible"
+                className="shrink-0 w-full snap-center relative rounded-2xl sm:rounded-[32px] border border-[#ffffff12] bg-[#0d1117] p-3 sm:p-4 overflow-visible"
               >
                 <div
                   className="absolute bottom-0 left-[20%] -translate-x-1/2 w-[40%] h-[0.5px] rounded-full"
@@ -718,14 +790,14 @@ export default function DataAnalyticsPage() {
                       "linear-gradient(90deg, transparent, #2756f7, transparent)",
                   }}
                 />
-                <div className="bg-[#111827] rounded-2xl p-6 sm:p-8 border border-blue-500/20">
-                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
+                <div className="bg-[#111827] rounded-xl sm:rounded-2xl px-4 py-4 sm:p-6 lg:p-8 border border-blue-500/20">
+                  <h3 className="text-base sm:text-xl font-bold text-white mb-0.5 sm:mb-1">
                     Salary by Career Level
                   </h3>
-                  <p className="text-gray-500 text-sm mb-6">
+                  <p className="text-gray-500 text-xs sm:text-sm mb-3 sm:mb-6">
                     Average India data analyst compensation by seniority (LPA)
                   </p>
-                  <div className="w-full h-[320px] sm:h-[360px]">
+                  <div className="w-full h-[230px] sm:h-[360px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart
                         data={salaryByLevel}
@@ -749,9 +821,7 @@ export default function DataAnalyticsPage() {
                           tick={{ fill: "#9ca3af", fontSize: 12 }}
                           tickLine={false}
                           axisLine={false}
-                          tickFormatter={(value: number) =>
-                            `₹${value}L`
-                          }
+                          tickFormatter={(value: number) => `₹${value}L`}
                           domain={[0, 55]}
                         />
                         <Tooltip
@@ -762,7 +832,11 @@ export default function DataAnalyticsPage() {
                             borderRadius: "12px",
                             padding: "12px 16px",
                           }}
-                          labelStyle={{ color: "#fff", fontWeight: 600, marginBottom: 4 }}
+                          labelStyle={{
+                            color: "#fff",
+                            fontWeight: 600,
+                            marginBottom: 4,
+                          }}
                           itemStyle={{ color: "#9ca3af" }}
                           formatter={(value: number | undefined) => [
                             `₹${value ?? 0} LPA`,
@@ -771,14 +845,18 @@ export default function DataAnalyticsPage() {
                           labelFormatter={(label: unknown) => {
                             const labelStr = String(label);
                             const item = salaryByLevel.find(
-                              (d) => d.shortLabel === labelStr
+                              (d) => d.shortLabel === labelStr,
                             );
                             return item
                               ? `${item.level} (${item.years})`
                               : labelStr;
                           }}
                         />
-                        <Bar dataKey="salary" radius={[6, 6, 0, 0]} maxBarSize={48}>
+                        <Bar
+                          dataKey="salary"
+                          radius={[6, 6, 0, 0]}
+                          maxBarSize={48}
+                        >
                           {salaryByLevel.map((entry, index) => (
                             <Cell
                               key={`cell-${index}`}
@@ -793,8 +871,9 @@ export default function DataAnalyticsPage() {
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
-                  <p className="text-gray-600 text-xs mt-4 text-center">
-                    Sources: AmbitionBox, Glassdoor India, Analytics India Mag (2024-2025)
+                  <p className="text-gray-600 text-xs mt-2 sm:mt-4 text-center">
+                    Sources: AmbitionBox, Glassdoor India, Analytics India Mag
+                    (2024-2025)
                   </p>
                 </div>
               </motion.div>
@@ -805,7 +884,7 @@ export default function DataAnalyticsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="relative rounded-[32px] border border-[#ffffff12] bg-[#0d1117] p-4 overflow-visible"
+                className="shrink-0 w-full snap-center relative rounded-2xl sm:rounded-[32px] border border-[#ffffff12] bg-[#0d1117] p-3 sm:p-4 overflow-visible"
               >
                 <div
                   className="absolute top-0 right-[20%] translate-x-1/2 w-[40%] h-[0.5px] rounded-full"
@@ -814,14 +893,14 @@ export default function DataAnalyticsPage() {
                       "linear-gradient(90deg, transparent, #2756f7, transparent)",
                   }}
                 />
-                <div className="bg-[#111827] rounded-2xl p-6 sm:p-8 border border-blue-500/20">
-                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
+                <div className="bg-[#111827] rounded-xl sm:rounded-2xl px-4 py-4 sm:p-6 lg:p-8 border border-blue-500/20">
+                  <h3 className="text-base sm:text-xl font-bold text-white mb-0.5 sm:mb-1">
                     Data Analytics Market Growth
                   </h3>
-                  <p className="text-gray-500 text-sm mb-6">
+                  <p className="text-gray-500 text-xs sm:text-sm mb-3 sm:mb-6">
                     India market size in USD billions (~27% CAGR)
                   </p>
-                  <div className="w-full h-[320px] sm:h-[360px]">
+                  <div className="w-full h-[230px] sm:h-[360px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
                         data={marketGrowth}
@@ -872,7 +951,11 @@ export default function DataAnalyticsPage() {
                             borderRadius: "12px",
                             padding: "12px 16px",
                           }}
-                          labelStyle={{ color: "#fff", fontWeight: 600, marginBottom: 4 }}
+                          labelStyle={{
+                            color: "#fff",
+                            fontWeight: 600,
+                            marginBottom: 4,
+                          }}
                           itemStyle={{ color: "#9ca3af" }}
                           formatter={(value: number | undefined) => [
                             `$${value ?? 0}B`,
@@ -901,11 +984,34 @@ export default function DataAnalyticsPage() {
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
-                  <p className="text-gray-600 text-xs mt-4 text-center">
+                  <p className="text-gray-600 text-xs mt-2 sm:mt-4 text-center">
                     Sources: IMARC Group, Grand View Research (India)
                   </p>
                 </div>
               </motion.div>
+            </div>
+
+            {/* Chart Dot Navigation - Mobile Only */}
+            <div className="flex justify-center gap-2 mt-4 lg:hidden">
+              {Array.from({ length: CHART_COUNT }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    scrollToChartIndex(i);
+                    setChartActiveIndex(i);
+                    chartAutoScrollPaused.current = true;
+                    if (chartResumeTimeoutRef.current)
+                      clearTimeout(chartResumeTimeoutRef.current);
+                    chartResumeTimeoutRef.current = setTimeout(() => {
+                      chartAutoScrollPaused.current = false;
+                    }, CHART_AUTO_SCROLL_RESUME_DELAY);
+                  }}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    chartActiveIndex === i ? "bg-primary w-4" : "bg-white/20"
+                  }`}
+                  aria-label={`Go to chart ${i + 1}`}
+                />
+              ))}
             </div>
 
             {/* Descriptive Text - Part 2 (below charts) */}
@@ -914,7 +1020,7 @@ export default function DataAnalyticsPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-gray-400 text-base sm:text-lg leading-relaxed max-w-3xl mx-auto text-center mt-14"
+              className="text-gray-400 text-sm sm:text-lg leading-relaxed max-w-3xl mx-auto text-center mt-10 lg:mt-14"
             >
               Fuelled by Digital India initiatives, 5G rollout, and rapid cloud
               adoption, India&apos;s data analytics market is set to reach{" "}
@@ -932,68 +1038,47 @@ export default function DataAnalyticsPage() {
         <section id="course-details" className="relative py-10 lg:py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {/* Section Heading */}
-            <motion.div
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-16"
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="text-3xl sm:text-4xl lg:text-5xl text-center mb-4"
             >
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">
-                <span className="font-bold">Curriculum Breakdown</span>
-                <br />
-                <span
-                  className="italic font-normal  text-xl sm:text-2xl lg:text-3xl xl:text-4xl"
-                  style={{
-                    fontFamily:
-                      '"IBM Plex Serif", "IBM Plex Serif Placeholder", serif',
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  Your 3-month roadmap to becoming a{" "}
-                  <span className="text-primary">job-ready Data Analyst.</span>{" "}
-                </span>
-              </h2>
-            </motion.div>
+              <span className="font-bold">Curriculum</span>{" "}
+              <span
+                className="italic"
+                style={{ fontFamily: '"IBM Plex Serif", serif' }}
+              >
+                Breakdown
+              </span>
+            </motion.h2>
 
-            {/* Modal Overlay */}
-            <AnimatePresence>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
+              className="text-base sm:text-lg lg:text-xl text-muted-foreground text-center mb-14 lg:mb-20 max-w-3xl mx-auto"
+            >
+              Your 3-month roadmap to becoming a{" "}
+              <span className="text-primary font-medium">
+                job-ready Data Analyst.
+              </span>
+            </motion.p>
+
+            {/* Expanded Card Modal */}
+            <ExpandableCardModal
+              isOpen={!!activeModule}
+              onClose={() => setActiveModule(null)}
+            >
               {activeModule && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+                <ExpandedModuleCard
+                  module={activeModule}
+                  layoutId={`module-${activeModule.week}-${id}`}
                 />
               )}
-            </AnimatePresence>
-
-            {/* Expanded Modal */}
-            <AnimatePresence>
-              {activeModule && (
-                <div className="fixed inset-0 grid place-items-center z-[101] p-4">
-                  {/* Close Button (Mobile) */}
-                  <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0, transition: { duration: 0.05 } }}
-                    className="absolute top-4 right-4 lg:hidden flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-full h-10 w-10 border border-white/20 hover:bg-white/20 transition-colors z-[102]"
-                    onClick={() => setActiveModule(null)}
-                    aria-label="Close modal"
-                  >
-                    <CloseIcon />
-                  </motion.button>
-
-                  {/* Expanded Card */}
-                  <div ref={modalRef} role="dialog" aria-modal="true">
-                    <ExpandedModuleCard
-                      module={activeModule}
-                      layoutId={`module-${activeModule.week}-${id}`}
-                    />
-                  </div>
-                </div>
-              )}
-            </AnimatePresence>
+            </ExpandableCardModal>
 
             {/* Timeline Container */}
             <div className="relative max-w-[1200px] mx-auto">
@@ -1057,32 +1142,38 @@ export default function DataAnalyticsPage() {
         <section className="relative py-10 lg:py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {/* Section Heading */}
-            <motion.div
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-16"
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="text-3xl sm:text-4xl lg:text-5xl text-center mb-4"
             >
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">
-                <span className="font-bold">Tools & Technologies Covered</span>
-                <br />
-                <span
-                  className="italic font-normal text-xl sm:text-2xl lg:text-3xl xl:text-4xl"
-                  style={{
-                    fontFamily:
-                      '"IBM Plex Serif", "IBM Plex Serif Placeholder", serif',
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  Industry-standard tools you will{" "}
-                  <span className="text-primary">master in this program.</span>
-                </span>
-              </h2>
-            </motion.div>
+              <span className="font-bold">Tools &</span>{" "}
+              <span
+                className="italic"
+                style={{ fontFamily: '"IBM Plex Serif", serif' }}
+              >
+                Technologies
+              </span>{" "}
+              <span className="text-primary font-bold">Covered</span>
+            </motion.h2>
 
-            {/* Tools Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 max-w-[1100px] mx-auto place-items-center">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
+              className="text-base sm:text-lg lg:text-xl text-muted-foreground text-center mb-10 lg:mb-14 max-w-3xl mx-auto"
+            >
+              Industry-standard tools you will{" "}
+              <span className="text-primary font-medium">
+                master in this program.
+              </span>
+            </motion.p>
+
+            {/* Tools Grid — responsive gaps, no overlap: min-w-0 on cells */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 mobile-m:gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-6 max-w-[1100px] px-8 md:px-0 mx-auto place-items-center">
               {tools.map((tool, index) => {
                 const Icon = tool.icon;
                 return (
@@ -1092,10 +1183,14 @@ export default function DataAnalyticsPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: index * 0.05 }}
+                    className="w-full min-w-0 max-w-full"
                   >
                     <TiltedToolCard>
-                      <Icon size={40} className="text-primary" />
-                      <span className="text-white text-sm sm:text-base font-medium text-center">
+                      <Icon
+                        size={40}
+                        className="text-primary w-6! h-6! mobile-m:w-7! mobile-m:h-7! sm:w-8! sm:h-8! md:w-9! md:h-9! lg:w-10! lg:h-10! xl:w-10! xl:h-10!"
+                      />
+                      <span className="text-white text-[11px] mobile-m:text-xs sm:text-sm md:text-base lg:text-base xl:text-base font-medium text-center leading-tight">
                         {tool.name}
                       </span>
                     </TiltedToolCard>

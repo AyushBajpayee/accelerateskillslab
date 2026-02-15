@@ -1,7 +1,44 @@
+"use client";
+
 import Link from "next/link";
-import { Phone, Mail, Linkedin, Instagram, Twitter } from "lucide-react";
+import Image from "next/image";
+import { Phone, Mail, Linkedin } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
+
+const WATERMARK_TEXT = "AccelerateSkillsLab";
+const MEASURE_FONT_SIZE_PX = 100;
 
 export function Footer() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
+  const [fontSizePx, setFontSizePx] = useState<number | null>(null);
+
+  useEffect(() => {
+    function updateFontSize() {
+      const measure = measureRef.current;
+      if (!measure) return;
+      // Use viewport width so the watermark always spans the full screen
+      const viewportWidth =
+        typeof window !== "undefined" ? window.innerWidth : 0;
+      const textWidth = measure.getBoundingClientRect().width;
+      if (viewportWidth > 0 && textWidth > 0) {
+        // Slight safety factor to avoid subpixel clipping at edges
+        const targetWidth = viewportWidth * 0.99;
+        const scale = targetWidth / textWidth;
+        setFontSizePx(MEASURE_FONT_SIZE_PX * scale);
+      }
+    }
+
+    updateFontSize();
+    window.addEventListener("resize", updateFontSize);
+    const ro = new ResizeObserver(updateFontSize);
+    if (containerRef.current) ro.observe(containerRef.current);
+    return () => {
+      window.removeEventListener("resize", updateFontSize);
+      ro.disconnect();
+    };
+  }, []);
+
   return (
     <footer
       className="relative overflow-hidden border-t border-white/10"
@@ -24,7 +61,7 @@ export function Footer() {
         </div>
 
         {/* Navigation Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-16 lg:mb-28">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 lg:gap-12 mb-16 lg:mb-28">
           {/* Programs Column */}
           <div>
             <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
@@ -35,13 +72,13 @@ export function Footer() {
                 href="/courses/data-analytics"
                 className="block text-white/70 hover:text-white transition-colors text-sm"
               >
-                Data Analytics Program
+                Data Analytics
               </Link>
               <Link
                 href="/courses/data-engineering"
                 className="block text-white/70 hover:text-white transition-colors text-sm"
               >
-                Data Engineering Program
+                Data Engineering
               </Link>
               <a
                 href="#"
@@ -73,8 +110,8 @@ export function Footer() {
             </nav>
           </div>
 
-          {/* Company Column */}
-          <div>
+          {/* Company Column — below 425px: after Connect; from mobile-l/sm: normal (3rd) */}
+          <div className="order-4 mobile-l:order-3">
             <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
               Company
             </h3>
@@ -91,7 +128,7 @@ export function Footer() {
               >
                 Contact Us
               </a>
-              <a
+              {/* <a
                 href="#"
                 className="block text-white/50 text-sm cursor-not-allowed"
               >
@@ -102,12 +139,12 @@ export function Footer() {
                 className="block text-white/50 text-sm cursor-not-allowed"
               >
                 Terms of Service
-              </a>
+              </a> */}
             </nav>
           </div>
 
-          {/* Connect Column */}
-          <div>
+          {/* Connect Column — below 425px: before Company; from mobile-l/sm: normal (4th) */}
+          <div className="order-3 mobile-l:order-4">
             <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
               Connect
             </h3>
@@ -123,88 +160,70 @@ export function Footer() {
                 <span>+91 8106721085</span>
               </a>
               <a
-                href="mailto:hello@accelerateskillslab.com"
+                href="mailto:asl@accelerateskillslab.com"
                 className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm group"
               >
                 <Mail
                   size={16}
                   className="group-hover:scale-110 transition-transform"
                 />
-                <span>hello@accelerateskillslab.in</span>
+                <span>asl@accelerateskillslab.in</span>
               </a>
-              <div className="flex items-center gap-3 pt-2">
+              {/* <div className="flex items-center gap-3 ">
                 <a
-                  href="#"
+                  href="https://www.linkedin.com/company/accelerate-skills-lab/about/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="LinkedIn"
-                  className="text-white/70 hover:text-white hover:scale-110 transition-all"
+                  className="flex items-end gap-2 text-base text-white/70 hover:text-white hover:scale-105 transition-all"
                 >
-                  <Linkedin size={20} />
+                  <Linkedin size={16} className="shrink-0" />
+                  <span className="leading-none">LinkedIn</span>
                 </a>
-                <a
-                  href="#"
-                  aria-label="Instagram"
-                  className="text-white/70 hover:text-white hover:scale-110 transition-all"
-                >
-                  <Instagram size={20} />
-                </a>
-                <a
-                  href="#"
-                  aria-label="Twitter"
-                  className="text-white/70 hover:text-white hover:scale-110 transition-all"
-                >
-                  <Twitter size={20} />
-                </a>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
 
         {/* Bottom Section */}
         <div className="border-t border-white/10 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex flex-col sm:flex-row items-center gap-4 text-white/60 text-sm">
+          <div className="flex flex-col md:flex-row justify-end items-center gap-4">
+            <div className=" text-white/60 text-sm">
               <p>
                 &copy; {new Date().getFullYear()} AccelerateSkillsLab. All
                 rights reserved.
               </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <a
-                href="#"
-                aria-label="LinkedIn"
-                className="text-white/60 hover:text-white transition-colors"
-              >
-                <Linkedin size={18} />
-              </a>
-              <a
-                href="#"
-                aria-label="Instagram"
-                className="text-white/60 hover:text-white transition-colors"
-              >
-                <Instagram size={18} />
-              </a>
-              <a
-                href="#"
-                aria-label="Twitter"
-                className="text-white/60 hover:text-white transition-colors"
-              >
-                <Twitter size={18} />
-              </a>
             </div>
           </div>
         </div>
       </div>
 
       {/* Brand Watermark */}
-      <div className="absolute -bottom-24 left-0 right-0 pointer-events-none overflow-hidden z-0">
-        <div className="relative">
+      <div
+        ref={containerRef}
+        className="absolute -bottom-3 sm:-bottom-6 md:-bottom-10 lg:-bottom-12 xl:-bottom-16 2xl:-bottom-20 left-1/2 -translate-x-1/2 w-screen pointer-events-none overflow-hidden z-0"
+      >
+        <div className="relative w-full">
+          {/* Hidden span for measuring text width at a known font size */}
+          <span
+            ref={measureRef}
+            className="absolute font-bold whitespace-nowrap invisible pointer-events-none"
+            style={{ fontSize: MEASURE_FONT_SIZE_PX }}
+            aria-hidden
+          >
+            {WATERMARK_TEXT}
+          </span>
           <p
-            className="text-[12rem] sm:text-[16rem] lg:text-[20rem] font-bold text-white/5 whitespace-nowrap leading-none"
+            className="font-bold text-white/5 whitespace-nowrap leading-none"
             style={{
+              fontSize:
+                fontSizePx != null
+                  ? `${fontSizePx}px`
+                  : "clamp(2rem, 8vw, 12rem)",
               textShadow: "0 0 40px rgba(255, 255, 255, 0.1)",
             }}
           >
-            AccelerateSkillsLab
+            {WATERMARK_TEXT}
           </p>
         </div>
       </div>

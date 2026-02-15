@@ -58,7 +58,7 @@ export function TiltedToolCard({
   return (
     <figure
       ref={ref}
-      className={`relative w-full perspective-midrange flex flex-col items-center justify-center ${className}`}
+      className={`relative w-full min-w-0 max-w-full perspective-midrange flex flex-col items-center justify-center ${className}`}
       onMouseMove={handleMouse}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -70,10 +70,10 @@ export function TiltedToolCard({
           scale,
           transformStyle: "preserve-3d",
         }}
-        className="relative w-[200px] h-[140px] mx-auto"
+        className="relative w-full min-w-0 max-w-full sm:max-w-[180px] md:max-w-[200px] lg:max-w-[220px] xl:max-w-[240px] h-[90px] mobile-m:h-[100px] sm:h-[120px] md:h-[130px] lg:h-[140px] xl:h-[150px] mx-auto"
       >
         {/* Outer wrapper — subtle outer border + bottom glow line */}
-        <div className="relative rounded-[1.75rem] border border-[#ffffff12] bg-[#0d1117] p-3 overflow-visible h-full">
+        <div className="relative rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-[1.75rem] xl:rounded-4xl border border-[#ffffff12] bg-[#0d1117] p-1.5 mobile-m:p-2 sm:p-2.5 md:p-3 lg:p-3 xl:p-3.5 overflow-visible h-full">
           {/* Bottom glow line */}
           <div
             className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[0.5px] rounded-full"
@@ -83,8 +83,8 @@ export function TiltedToolCard({
             }}
           />
 
-          {/* Inner card */}
-          <div className="bg-[#111827] rounded-[1.25rem] p-3 flex flex-col items-center justify-center gap-1 border border-blue-500/20 hover:border-blue-500/40 transition-colors h-full">
+          {/* Inner card — padding and gap scale up by breakpoint */}
+          <div className="bg-[#111827] rounded-lg sm:rounded-xl md:rounded-[1.25rem] lg:rounded-[1.25rem] p-2 sm:p-2.5 md:p-3 lg:p-3 xl:p-3.5 flex flex-col items-center justify-center gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-2 border border-blue-500/20 hover:border-blue-500/40 transition-colors h-full">
             {children}
           </div>
         </div>

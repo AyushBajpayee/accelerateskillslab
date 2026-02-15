@@ -1,15 +1,14 @@
 "use client";
 
-import { useRef, useState, useEffect, useId } from "react";
+import { useRef, useState, useEffect, useId, useCallback } from "react";
 import {
   motion,
   useMotionValue,
   useSpring,
   type SpringOptions,
-  AnimatePresence,
 } from "motion/react";
 import Image from "next/image";
-import { useOutsideClick } from "@/hooks/use-outside-click";
+import { ExpandableCardModal } from "@/components/ui/expandable-card-modal";
 
 const springValues: SpringOptions = {
   damping: 30,
@@ -99,30 +98,6 @@ const items: JobReadyCard[] = [
   },
 ];
 
-function CloseIcon() {
-  return (
-    <motion.svg
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0, transition: { duration: 0.05 } }}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4 text-white"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M18 6l-12 12" />
-      <path d="M6 6l12 12" />
-    </motion.svg>
-  );
-}
-
 function ExpandedJobCard({
   item,
   layoutId,
@@ -133,7 +108,7 @@ function ExpandedJobCard({
   return (
     <motion.div
       layoutId={layoutId}
-      className="w-full max-w-[800px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-[#111827] border border-white/10 sm:rounded-3xl overflow-hidden"
+      className="w-full max-w-[800px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-[#111827] border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden"
     >
       {/* Image */}
       <motion.div
@@ -150,18 +125,18 @@ function ExpandedJobCard({
       </motion.div>
 
       {/* Content */}
-      <div className="p-6 space-y-4">
+      <div className="p-4 sm:p-5 md:p-6 space-y-3 sm:space-y-4">
         {/* Header with Title & Subtitle */}
         <div>
           <motion.h3
             layoutId={`title-${item.title}-${layoutId}`}
-            className={`text-2xl font-bold mb-2 ${item.accentColor}`}
+            className={`text-lg sm:text-xl md:text-2xl font-bold mb-1 sm:mb-2 ${item.accentColor}`}
           >
             {item.title}
           </motion.h3>
           <motion.p
             layoutId={`subtitle-${item.title}-${layoutId}`}
-            className="text-lg font-semibold text-muted-foreground"
+            className="text-sm sm:text-base md:text-lg font-semibold text-muted-foreground"
           >
             {item.subtitle}
           </motion.p>
@@ -172,9 +147,9 @@ function ExpandedJobCard({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="pt-4"
+          className="pt-2 sm:pt-3 md:pt-4"
         >
-          <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+          <p className="text-xs sm:text-sm md:text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
             {item.expandedDescription}
           </p>
         </motion.div>
@@ -188,11 +163,13 @@ function TiltedJobCard({
   index,
   onClick,
   layoutId,
+  disableEntrance = false,
 }: {
   item: JobReadyCard;
   index: number;
   onClick: () => void;
   layoutId: string;
+  disableEntrance?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const rotateAmplitude = 10;
@@ -226,14 +203,18 @@ function TiltedJobCard({
     <motion.figure
       ref={ref}
       layoutId={layoutId}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{
-        duration: 0.5,
-        ease: "easeOut",
-        delay: index * 0.1,
-      }}
+      {...(disableEntrance
+        ? { initial: false }
+        : {
+            initial: { opacity: 0, y: 30 },
+            whileInView: { opacity: 1, y: 0 },
+            viewport: { once: true },
+            transition: {
+              duration: 0.5,
+              ease: "easeOut" as const,
+              delay: index * 0.1,
+            },
+          })}
       className="relative w-full perspective-midrange cursor-pointer"
       onClick={onClick}
       onMouseMove={handleMouse}
@@ -292,34 +273,94 @@ function TiltedJobCard({
   );
 }
 
+const AUTO_SCROLL_INTERVAL = 2500;
+const AUTO_SCROLL_RESUME_DELAY = 3000;
+
 export function JobReady() {
   const [active, setActive] = useState<(typeof items)[number] | null>(null);
-  const id = useId();
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setActive(null);
-      }
-    }
-
-    if (active) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [active]);
-
-  useOutsideClick(modalRef as React.RefObject<HTMLDivElement>, () =>
-    setActive(null),
+  const [activeSource, setActiveSource] = useState<"mobile" | "desktop">(
+    "desktop",
   );
+  const id = useId();
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  /* ── carousel state ── */
+  const [activeIndex, setActiveIndex] = useState(0);
+  const autoScrollPaused = useRef(false);
+  const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /* ── scroll to a specific card index ── */
+  const scrollToIndex = useCallback((index: number) => {
+    const container = carouselRef.current;
+    if (!container) return;
+    const child = container.children[index] as HTMLElement | undefined;
+    if (child) {
+      container.scrollTo({
+        left: child.offsetLeft - container.offsetLeft,
+        behavior: "smooth",
+      });
+    }
+  }, []);
+
+  /* ── track which card is currently visible via scroll position ── */
+  useEffect(() => {
+    const container = carouselRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft;
+      const containerWidth = container.clientWidth;
+      const slideWidth = containerWidth + 16; // gap-4 = 16px
+      const index = Math.round(scrollLeft / slideWidth);
+      setActiveIndex(Math.min(Math.max(0, index), items.length - 1));
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  /* ── auto-scroll ── */
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (autoScrollPaused.current) return;
+      setActiveIndex((prev) => {
+        const next = (prev + 1) % items.length;
+        scrollToIndex(next);
+        return next;
+      });
+    }, AUTO_SCROLL_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, [scrollToIndex]);
+
+  /* ── pause auto-scroll on touch, resume after delay ── */
+  useEffect(() => {
+    const container = carouselRef.current;
+    if (!container) return;
+
+    const pause = () => {
+      autoScrollPaused.current = true;
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    };
+
+    const resume = () => {
+      resumeTimeoutRef.current = setTimeout(() => {
+        autoScrollPaused.current = false;
+      }, AUTO_SCROLL_RESUME_DELAY);
+    };
+
+    container.addEventListener("touchstart", pause, { passive: true });
+    container.addEventListener("touchend", resume, { passive: true });
+
+    return () => {
+      container.removeEventListener("touchstart", pause);
+      container.removeEventListener("touchend", resume);
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    };
+  }, []);
 
   return (
-    <section className="py-10 lg:py-20">
+    <section id="job-ready" className="py-10 lg:py-20">
       <div className="container mx-auto px-4 sm:px-8 lg:px-20">
         {/* Section Heading */}
         <motion.h2
@@ -350,53 +391,76 @@ export function JobReady() {
           ASL's Precision-Led Upskilling for the Modern Data Economy .
         </motion.p>
 
-        {/* Modal Overlay */}
-        <AnimatePresence>
+        {/* Expanded Card Modal */}
+        <ExpandableCardModal isOpen={!!active} onClose={() => setActive(null)}>
           {active && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+            <ExpandedJobCard
+              item={active}
+              layoutId={`${activeSource === "mobile" ? "mobile-card" : "card"}-${active.title}-${id}`}
             />
           )}
-        </AnimatePresence>
+        </ExpandableCardModal>
 
-        {/* Expanded Modal */}
-        <AnimatePresence>
-          {active && (
-            <div className="fixed inset-0 grid place-items-center z-[101] p-4">
-              {/* Close Button (Mobile) */}
-              <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, transition: { duration: 0.05 } }}
-                className="absolute top-4 right-4 lg:hidden flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-full h-10 w-10 border border-white/20 hover:bg-white/20 transition-colors z-[102]"
-                onClick={() => setActive(null)}
-                aria-label="Close modal"
+        {/* ── Mobile Carousel ── */}
+        <div className="sm:hidden">
+          <div
+            ref={carouselRef}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+          >
+            {items.map((item, index) => (
+              <div
+                key={item.title}
+                className="w-full shrink-0 snap-center cursor-pointer"
               >
-                <CloseIcon />
-              </motion.button>
-
-              {/* Expanded Card */}
-              <div ref={modalRef} role="dialog" aria-modal="true">
-                <ExpandedJobCard
-                  item={active}
-                  layoutId={`card-${active.title}-${id}`}
+                <TiltedJobCard
+                  item={item}
+                  index={index}
+                  onClick={() => {
+                    setActiveSource("mobile");
+                    setActive(item);
+                  }}
+                  layoutId={`mobile-card-${item.title}-${id}`}
+                  disableEntrance
                 />
               </div>
-            </div>
-          )}
-        </AnimatePresence>
+            ))}
+          </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[900px] mx-auto">
+          {/* Dot navigation */}
+          <div className="flex justify-center gap-2 mt-4">
+            {items.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  scrollToIndex(i);
+                  setActiveIndex(i);
+                  autoScrollPaused.current = true;
+                  if (resumeTimeoutRef.current)
+                    clearTimeout(resumeTimeoutRef.current);
+                  resumeTimeoutRef.current = setTimeout(() => {
+                    autoScrollPaused.current = false;
+                  }, AUTO_SCROLL_RESUME_DELAY);
+                }}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  activeIndex === i ? "bg-primary w-4" : "bg-white/20"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* ── Desktop Cards Grid ── */}
+        <div className="hidden sm:grid sm:grid-cols-2 gap-6 max-w-[900px] mx-auto">
           {items.map((item, index) => (
             <TiltedJobCard
               key={item.title}
               item={item}
               index={index}
-              onClick={() => setActive(item)}
+              onClick={() => {
+                setActiveSource("desktop");
+                setActive(item);
+              }}
               layoutId={`card-${item.title}-${id}`}
             />
           ))}
