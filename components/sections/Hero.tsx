@@ -123,7 +123,7 @@ function LiveSessionMockup() {
 
 export function Hero() {
   return (
-    <section className="relative pt-[160px] pb-[200px] lg:pt-[280px] lg:pb-[250px] flex flex-col justify-center overflow-hidden">
+    <section className="relative py-[160px] lg:py-[200px] flex flex-col justify-center overflow-hidden">
       {/* Layered Aceternity Backgrounds */}
       <Spotlight
         className="-top-40 left-0 md:-top-20 md:left-60"
@@ -178,7 +178,7 @@ export function Hero() {
                 containerClassName="rounded-full w-fit"
                 as="a"
                 href="#courses"
-                className="h-12 px-8 text-lg text-white flex items-center space-x-2"
+                className="px-5 py-2.5 sm:px-7 text-sm font-medium text-white flex items-center space-x-2"
                 innerStyle={{
                   background:
                     "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",

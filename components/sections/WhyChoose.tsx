@@ -517,7 +517,7 @@ export function WhyChoose() {
   const isMobile = useMobileDetection();
 
   return (
-    <section className="py-10 lg:py-20 bento-section">
+    <section id="why-choose" className="py-10 lg:py-20 bento-section">
       <div className="container mx-auto px-4 sm:px-8 lg:px-20">
         {/* Section Heading */}
         <motion.h2

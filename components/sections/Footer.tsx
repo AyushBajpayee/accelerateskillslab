@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Mail, Linkedin, Instagram, Twitter } from "lucide-react";
+import { Phone, Mail, Linkedin } from "lucide-react";
 
 export function Footer() {
   return (
@@ -91,7 +91,7 @@ export function Footer() {
               >
                 Contact Us
               </a>
-              <a
+              {/* <a
                 href="#"
                 className="block text-white/50 text-sm cursor-not-allowed"
               >
@@ -102,7 +102,7 @@ export function Footer() {
                 className="block text-white/50 text-sm cursor-not-allowed"
               >
                 Terms of Service
-              </a>
+              </a> */}
             </nav>
           </div>
 
@@ -132,27 +132,16 @@ export function Footer() {
                 />
                 <span>hello@accelerateskillslab.in</span>
               </a>
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex items-center gap-3 ">
                 <a
-                  href="#"
+                  href="https://www.linkedin.com/company/accelerate-skills-lab/about/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="LinkedIn"
-                  className="text-white/70 hover:text-white hover:scale-110 transition-all"
+                  className="flex items-end gap-2 text-base text-white/70 hover:text-white hover:scale-105 transition-all"
                 >
-                  <Linkedin size={20} />
-                </a>
-                <a
-                  href="#"
-                  aria-label="Instagram"
-                  className="text-white/70 hover:text-white hover:scale-110 transition-all"
-                >
-                  <Instagram size={20} />
-                </a>
-                <a
-                  href="#"
-                  aria-label="Twitter"
-                  className="text-white/70 hover:text-white hover:scale-110 transition-all"
-                >
-                  <Twitter size={20} />
+                  <Linkedin size={16} className="shrink-0" />
+                  <span className="leading-none">LinkedIn</span>
                 </a>
               </div>
             </div>
@@ -161,35 +150,12 @@ export function Footer() {
 
         {/* Bottom Section */}
         <div className="border-t border-white/10 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex flex-col sm:flex-row items-center gap-4 text-white/60 text-sm">
+          <div className="flex flex-col md:flex-row justify-end items-center gap-4">
+            <div className=" text-white/60 text-sm">
               <p>
                 &copy; {new Date().getFullYear()} AccelerateSkillsLab. All
                 rights reserved.
               </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <a
-                href="#"
-                aria-label="LinkedIn"
-                className="text-white/60 hover:text-white transition-colors"
-              >
-                <Linkedin size={18} />
-              </a>
-              <a
-                href="#"
-                aria-label="Instagram"
-                className="text-white/60 hover:text-white transition-colors"
-              >
-                <Instagram size={18} />
-              </a>
-              <a
-                href="#"
-                aria-label="Twitter"
-                className="text-white/60 hover:text-white transition-colors"
-              >
-                <Twitter size={18} />
-              </a>
             </div>
           </div>
         </div>
