@@ -30,49 +30,49 @@ const features: FeatureCard[] = [
     title: "Live Classes",
     description:
       "Thrive in a vibrant learning environment with live classes that foster interaction and immersive learning.",
-    gridClass: "lg:col-span-1 lg:row-span-2",
+    gridClass: "xl:col-span-1 xl:row-span-2",
   },
   {
     icon: BookOpen,
     title: "Industry Based Curriculum",
     description:
       "Dive deep with a meticulously crafted curriculum that navigates the realms of data science with precision and clarity.",
-    gridClass: "lg:col-span-2 lg:row-span-1",
+    gridClass: "xl:col-span-2 xl:row-span-1",
   },
   {
     icon: FlaskConical,
     title: "Hands-On Practical Training",
     description:
       "Immerse yourself with tasks, quizzes, and projects following each topic, ensuring that theory marries practice seamlessly.",
-    gridClass: "lg:col-span-1 lg:row-span-2",
+    gridClass: "xl:col-span-1 xl:row-span-2",
   },
   {
     icon: MessageCircleQuestion,
     title: "Robust Doubt Support",
     description:
       "Erase uncertainties with robust doubt support, turning every question into a stepping stone toward mastery.",
-    gridClass: "lg:col-span-1 lg:row-span-1",
+    gridClass: "xl:col-span-1 xl:row-span-1",
   },
   {
     icon: FolderGit2,
     title: "Real-Time Projects",
     description:
       "Elevate your expertise with real-time projects that propel your practical understanding into the professional universe.",
-    gridClass: "lg:col-span-1 lg:row-span-1",
+    gridClass: "xl:col-span-1 xl:row-span-1",
   },
   {
     icon: BriefcaseBusiness,
     title: "Dedicated Job Preparation",
     description:
       "Harness the power of strategic job preparation that polishes your profile and preps you for your dream job.",
-    gridClass: "lg:col-span-2 lg:row-span-1",
+    gridClass: "xl:col-span-2 xl:row-span-1",
   },
   {
     icon: BadgeDollarSign,
     title: "Affordable Fee Structure",
     description:
       "Unlock a treasure trove of knowledge without breaking the bank, with fees that champion affordability and value.",
-    gridClass: "lg:col-span-2 lg:row-span-1",
+    gridClass: "xl:col-span-2 xl:row-span-1",
   },
 ];
 
@@ -104,7 +104,7 @@ const MOBILE_BREAKPOINT = 768;
 const createParticleElement = (
   x: number,
   y: number,
-  color: string = GLOW_COLOR
+  color: string = GLOW_COLOR,
 ): HTMLDivElement => {
   const el = document.createElement("div");
   el.className = "particle";
@@ -126,7 +126,7 @@ const updateCardGlowProperties = (
   mouseX: number,
   mouseY: number,
   glow: number,
-  radius: number
+  radius: number,
 ) => {
   const rect = card.getBoundingClientRect();
   const relativeX = ((mouseX - rect.left) / rect.width) * 100;
@@ -194,8 +194,8 @@ function ParticleCard({
       createParticleElement(
         Math.random() * width,
         Math.random() * height,
-        glowColor
-      )
+        glowColor,
+      ),
     );
     particlesInitialized.current = true;
   }, [particleCount, glowColor]);
@@ -212,7 +212,9 @@ function ParticleCard({
         opacity: 0,
         duration: 0.3,
         ease: "back.in(1.7)",
-        onComplete: () => { p.parentNode?.removeChild(p); },
+        onComplete: () => {
+          p.parentNode?.removeChild(p);
+        },
       });
     });
     particlesRef.current = [];
@@ -233,7 +235,7 @@ function ParticleCard({
         gsap.fromTo(
           clone,
           { scale: 0, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
+          { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" },
         );
         gsap.to(clone, {
           x: (Math.random() - 0.5) * 100,
@@ -325,7 +327,7 @@ function ParticleCard({
         Math.hypot(x, y),
         Math.hypot(x - rect.width, y),
         Math.hypot(x, y - rect.height),
-        Math.hypot(x - rect.width, y - rect.height)
+        Math.hypot(x - rect.width, y - rect.height),
       );
 
       const ripple = document.createElement("div");
@@ -346,7 +348,7 @@ function ParticleCard({
           duration: 0.8,
           ease: "power2.out",
           onComplete: () => ripple.remove(),
-        }
+        },
       );
     };
 
@@ -374,7 +376,11 @@ function ParticleCard({
   ]);
 
   return (
-    <div ref={cardRef} className={`particle-container ${className}`} style={style}>
+    <div
+      ref={cardRef}
+      className={`particle-container ${className}`}
+      style={style}
+    >
       {children}
     </div>
   );
@@ -434,7 +440,7 @@ function GlobalSpotlight({
           ease: "power2.out",
         });
         cards.forEach((c) =>
-          (c as HTMLElement).style.setProperty("--glow-intensity", "0")
+          (c as HTMLElement).style.setProperty("--glow-intensity", "0"),
         );
         return;
       }
@@ -459,7 +465,13 @@ function GlobalSpotlight({
         else if (eff <= fadeDistance)
           glow = (fadeDistance - eff) / (fadeDistance - proximity);
 
-        updateCardGlowProperties(el, e.clientX, e.clientY, glow, spotlightRadius);
+        updateCardGlowProperties(
+          el,
+          e.clientX,
+          e.clientY,
+          glow,
+          spotlightRadius,
+        );
       });
 
       gsap.to(spotlightRef.current, {
@@ -487,7 +499,7 @@ function GlobalSpotlight({
       gridRef.current
         ?.querySelectorAll(".magic-bento-card")
         .forEach((c) =>
-          (c as HTMLElement).style.setProperty("--glow-intensity", "0")
+          (c as HTMLElement).style.setProperty("--glow-intensity", "0"),
         );
       if (spotlightRef.current)
         gsap.to(spotlightRef.current, {
@@ -512,9 +524,93 @@ function GlobalSpotlight({
 
 /* ───────────────────── WhyChoose (main export) ─────────────────── */
 
+const AUTO_SCROLL_INTERVAL = 2500;
+const AUTO_SCROLL_RESUME_DELAY = 3000;
+
 export function WhyChoose() {
   const gridRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const isMobile = useMobileDetection();
+
+  /* ── carousel state ── */
+  const [activeIndex, setActiveIndex] = useState(0);
+  const autoScrollPaused = useRef(false);
+  const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /* ── scroll to a specific card index ── */
+  const scrollToIndex = useCallback((index: number) => {
+    const container = carouselRef.current;
+    if (!container) return;
+    const child = container.children[index] as HTMLElement | undefined;
+    if (child) {
+      // Use scrollTo on the container instead of scrollIntoView to avoid
+      // the browser scrolling the entire page to this section.
+      container.scrollTo({
+        left: child.offsetLeft - container.offsetLeft,
+        behavior: "smooth",
+      });
+    }
+  }, []);
+
+  /* ── track which card is currently visible via scroll position ── */
+  useEffect(() => {
+    const container = carouselRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft;
+      const containerWidth = container.clientWidth;
+      // Each card is full-width; account for gap (16px = gap-4)
+      const slideWidth = containerWidth + 16;
+      const index = Math.round(scrollLeft / slideWidth);
+      setActiveIndex(Math.min(Math.max(0, index), features.length - 1));
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  /* ── auto-scroll ── */
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const interval = setInterval(() => {
+      if (autoScrollPaused.current) return;
+      setActiveIndex((prev) => {
+        const next = (prev + 1) % features.length;
+        scrollToIndex(next);
+        return next;
+      });
+    }, AUTO_SCROLL_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, [isMobile, scrollToIndex]);
+
+  /* ── pause auto-scroll on touch, resume after delay ── */
+  useEffect(() => {
+    const container = carouselRef.current;
+    if (!container) return;
+
+    const pause = () => {
+      autoScrollPaused.current = true;
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    };
+
+    const resume = () => {
+      resumeTimeoutRef.current = setTimeout(() => {
+        autoScrollPaused.current = false;
+      }, AUTO_SCROLL_RESUME_DELAY);
+    };
+
+    container.addEventListener("touchstart", pause, { passive: true });
+    container.addEventListener("touchend", resume, { passive: true });
+
+    return () => {
+      container.removeEventListener("touchstart", pause);
+      container.removeEventListener("touchend", resume);
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    };
+  }, []);
 
   return (
     <section id="why-choose" className="py-10 lg:py-20 bento-section">
@@ -547,21 +643,75 @@ export function WhyChoose() {
           className="text-base sm:text-lg lg:text-xl text-muted-foreground text-center mb-14 lg:mb-20 max-w-3xl mx-auto"
         >
           Breaking into data engineering careers shouldn&apos;t feel this hard.
-          <br />
-          Our bootcamp makes the impossible possible.
         </motion.p>
 
         {/* Spotlight (renders nothing visually, just attaches listeners) */}
         <GlobalSpotlight gridRef={gridRef} disabled={isMobile} />
 
-        {/* Bento Grid */}
+        {/* ── Mobile Carousel ── */}
+        <div className="sm:hidden">
+          <div
+            ref={carouselRef}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+          >
+            {features.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <div
+                  key={feature.title}
+                  className="w-full shrink-0 snap-center"
+                >
+                  <div className="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 bg-[#111827] h-full">
+                    {/* Icon */}
+                    <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-primary/10 text-primary shrink-0">
+                      <Icon size={28} strokeWidth={1.5} />
+                    </div>
+                    {/* Title */}
+                    <h3 className="text-sm font-bold tracking-wide uppercase text-white">
+                      {feature.title}
+                    </h3>
+                    {/* Description */}
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {feature.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Dot navigation */}
+          <div className="flex justify-center gap-2 mt-4">
+            {features.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  scrollToIndex(i);
+                  setActiveIndex(i);
+                  autoScrollPaused.current = true;
+                  if (resumeTimeoutRef.current)
+                    clearTimeout(resumeTimeoutRef.current);
+                  resumeTimeoutRef.current = setTimeout(() => {
+                    autoScrollPaused.current = false;
+                  }, AUTO_SCROLL_RESUME_DELAY);
+                }}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  activeIndex === i ? "bg-primary w-4" : "bg-white/20"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* ── Desktop Bento Grid ── */}
         <motion.div
           ref={gridRef}
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5 auto-rows-auto"
+          className="hidden sm:grid sm:grid-cols-2 xl:grid-cols-4 gap-4 xl:gap-5 auto-rows-auto"
         >
           {features.map((feature) => {
             const Icon = feature.icon;
@@ -573,7 +723,7 @@ export function WhyChoose() {
                 className={feature.gridClass ?? ""}
               >
                 <ParticleCard
-                  className={`magic-bento-card magic-bento-card--border-glow group relative flex flex-col items-center text-center gap-4 p-6 lg:p-8 rounded-2xl border border-white/5 bg-[#111827] hover:border-primary/20 transition-colors duration-300 h-full`}
+                  className={`magic-bento-card magic-bento-card--border-glow group relative flex flex-col items-center text-center gap-4 p-6 xl:p-8 rounded-2xl border border-white/5 bg-[#111827] hover:border-primary/20 transition-colors duration-300 h-full`}
                   disableAnimations={isMobile}
                   glowColor={GLOW_COLOR}
                   enableTilt={false}

@@ -4,9 +4,9 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Spotlight } from "@/components/ui/spotlight";
 import { LampEffect } from "@/components/ui/lamp-effect";
-import { motion, AnimatePresence } from "motion/react";
-import { useState, useEffect, useId, useRef } from "react";
-import { useOutsideClick } from "@/hooks/use-outside-click";
+import { motion } from "motion/react";
+import { useState, useId } from "react";
+import { ExpandableCardModal } from "@/components/ui/expandable-card-modal";
 import {
   ArrowRight,
   Calendar,
@@ -27,7 +27,13 @@ import { Footer } from "@/components/sections/Footer";
 import { BookOpen } from "lucide-react";
 import Link from "next/link";
 import { TiltedToolCard } from "@/components/ui/TiltedToolCard";
-import { SiPython, SiPandas, SiNumpy, SiTableau, SiGithub } from "react-icons/si";
+import {
+  SiPython,
+  SiPandas,
+  SiNumpy,
+  SiTableau,
+  SiGithub,
+} from "react-icons/si";
 import { IconType } from "react-icons";
 import {
   BarChart,
@@ -43,7 +49,10 @@ import {
 } from "recharts";
 import { TrendingUp, IndianRupee, Briefcase } from "lucide-react";
 
-const tools: { name: string; icon: IconType | React.ComponentType<{ size?: number; className?: string }> }[] = [
+const tools: {
+  name: string;
+  icon: IconType | React.ComponentType<{ size?: number; className?: string }>;
+}[] = [
   { name: "Microsoft Excel", icon: Table },
   { name: "Python", icon: SiPython },
   { name: "Pandas", icon: SiPandas },
@@ -59,12 +68,32 @@ const tools: { name: string; icon: IconType | React.ComponentType<{ size?: numbe
 // Real salary data by career level - India (Sources: AmbitionBox, Glassdoor India, Analytics India Mag 2024-2025)
 const salaryByLevel = [
   { level: "Entry Level", shortLabel: "Entry", salary: 4, years: "0-1 yr" },
-  { level: "Junior Analyst", shortLabel: "Junior", salary: 6.5, years: "1-3 yrs" },
+  {
+    level: "Junior Analyst",
+    shortLabel: "Junior",
+    salary: 6.5,
+    years: "1-3 yrs",
+  },
   { level: "Mid-Career", shortLabel: "Mid", salary: 10, years: "4-6 yrs" },
-  { level: "Senior Analyst", shortLabel: "Senior", salary: 15, years: "7-9 yrs" },
+  {
+    level: "Senior Analyst",
+    shortLabel: "Senior",
+    salary: 15,
+    years: "7-9 yrs",
+  },
   { level: "Lead Analyst", shortLabel: "Lead", salary: 20, years: "10+ yrs" },
-  { level: "Analytics Manager", shortLabel: "Manager", salary: 26, years: "Mgmt" },
-  { level: "Director Analytics", shortLabel: "Director", salary: 50, years: "Director" },
+  {
+    level: "Analytics Manager",
+    shortLabel: "Manager",
+    salary: 26,
+    years: "Mgmt",
+  },
+  {
+    level: "Director Analytics",
+    shortLabel: "Director",
+    salary: 50,
+    years: "Director",
+  },
 ];
 
 // India Data Analytics market size growth (Sources: IMARC Group, Grand View Research — base $2.6B in 2024, ~27% CAGR)
@@ -320,30 +349,6 @@ function ScreenShareMockup() {
   );
 }
 
-function CloseIcon() {
-  return (
-    <motion.svg
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0, transition: { duration: 0.05 } }}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4 text-white"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M18 6l-12 12" />
-      <path d="M6 6l12 12" />
-    </motion.svg>
-  );
-}
-
 function ExpandedModuleCard({
   module,
   layoutId,
@@ -356,7 +361,7 @@ function ExpandedModuleCard({
   return (
     <motion.div
       layoutId={layoutId}
-      className="w-full max-w-[800px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-[#0d1117] border border-[#ffffff12] sm:rounded-3xl overflow-hidden"
+      className="w-full max-w-[800px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-[#0d1117] border border-[#ffffff12] rounded-2xl sm:rounded-3xl overflow-hidden"
     >
       {/* Image Section */}
       {moduleImage && (
@@ -473,7 +478,10 @@ function ModuleCard({
         className="absolute top-4 right-4 p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-primary/50 transition-all group"
         aria-hidden="true"
       >
-        <Expand size={18} className="text-gray-400 group-hover:text-primary transition-colors" />
+        <Expand
+          size={18}
+          className="text-gray-400 group-hover:text-primary transition-colors"
+        />
       </div>
 
       <div className="flex flex-col gap-4 pr-12">
@@ -513,28 +521,6 @@ export default function DataAnalyticsPage() {
     (typeof modules)[number] | null
   >(null);
   const id = useId();
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setActiveModule(null);
-      }
-    }
-
-    if (activeModule) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [activeModule]);
-
-  useOutsideClick(modalRef as React.RefObject<HTMLDivElement>, () =>
-    setActiveModule(null)
-  );
 
   return (
     <main className="relative min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary">
@@ -749,9 +735,7 @@ export default function DataAnalyticsPage() {
                           tick={{ fill: "#9ca3af", fontSize: 12 }}
                           tickLine={false}
                           axisLine={false}
-                          tickFormatter={(value: number) =>
-                            `₹${value}L`
-                          }
+                          tickFormatter={(value: number) => `₹${value}L`}
                           domain={[0, 55]}
                         />
                         <Tooltip
@@ -762,7 +746,11 @@ export default function DataAnalyticsPage() {
                             borderRadius: "12px",
                             padding: "12px 16px",
                           }}
-                          labelStyle={{ color: "#fff", fontWeight: 600, marginBottom: 4 }}
+                          labelStyle={{
+                            color: "#fff",
+                            fontWeight: 600,
+                            marginBottom: 4,
+                          }}
                           itemStyle={{ color: "#9ca3af" }}
                           formatter={(value: number | undefined) => [
                             `₹${value ?? 0} LPA`,
@@ -771,14 +759,18 @@ export default function DataAnalyticsPage() {
                           labelFormatter={(label: unknown) => {
                             const labelStr = String(label);
                             const item = salaryByLevel.find(
-                              (d) => d.shortLabel === labelStr
+                              (d) => d.shortLabel === labelStr,
                             );
                             return item
                               ? `${item.level} (${item.years})`
                               : labelStr;
                           }}
                         />
-                        <Bar dataKey="salary" radius={[6, 6, 0, 0]} maxBarSize={48}>
+                        <Bar
+                          dataKey="salary"
+                          radius={[6, 6, 0, 0]}
+                          maxBarSize={48}
+                        >
                           {salaryByLevel.map((entry, index) => (
                             <Cell
                               key={`cell-${index}`}
@@ -794,7 +786,8 @@ export default function DataAnalyticsPage() {
                     </ResponsiveContainer>
                   </div>
                   <p className="text-gray-600 text-xs mt-4 text-center">
-                    Sources: AmbitionBox, Glassdoor India, Analytics India Mag (2024-2025)
+                    Sources: AmbitionBox, Glassdoor India, Analytics India Mag
+                    (2024-2025)
                   </p>
                 </div>
               </motion.div>
@@ -872,7 +865,11 @@ export default function DataAnalyticsPage() {
                             borderRadius: "12px",
                             padding: "12px 16px",
                           }}
-                          labelStyle={{ color: "#fff", fontWeight: 600, marginBottom: 4 }}
+                          labelStyle={{
+                            color: "#fff",
+                            fontWeight: 600,
+                            marginBottom: 4,
+                          }}
                           itemStyle={{ color: "#9ca3af" }}
                           formatter={(value: number | undefined) => [
                             `$${value ?? 0}B`,
@@ -951,49 +948,25 @@ export default function DataAnalyticsPage() {
                   }}
                 >
                   Your 3-month roadmap to becoming a{" "}
-                  <span className="text-primary">job-ready Data Analyst.</span>{" "}
+                  <span className="text-primary">
+                    job-ready Data Analyst.
+                  </span>{" "}
                 </span>
               </h2>
             </motion.div>
 
-            {/* Modal Overlay */}
-            <AnimatePresence>
+            {/* Expanded Card Modal */}
+            <ExpandableCardModal
+              isOpen={!!activeModule}
+              onClose={() => setActiveModule(null)}
+            >
               {activeModule && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+                <ExpandedModuleCard
+                  module={activeModule}
+                  layoutId={`module-${activeModule.week}-${id}`}
                 />
               )}
-            </AnimatePresence>
-
-            {/* Expanded Modal */}
-            <AnimatePresence>
-              {activeModule && (
-                <div className="fixed inset-0 grid place-items-center z-[101] p-4">
-                  {/* Close Button (Mobile) */}
-                  <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0, transition: { duration: 0.05 } }}
-                    className="absolute top-4 right-4 lg:hidden flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-full h-10 w-10 border border-white/20 hover:bg-white/20 transition-colors z-[102]"
-                    onClick={() => setActiveModule(null)}
-                    aria-label="Close modal"
-                  >
-                    <CloseIcon />
-                  </motion.button>
-
-                  {/* Expanded Card */}
-                  <div ref={modalRef} role="dialog" aria-modal="true">
-                    <ExpandedModuleCard
-                      module={activeModule}
-                      layoutId={`module-${activeModule.week}-${id}`}
-                    />
-                  </div>
-                </div>
-              )}
-            </AnimatePresence>
+            </ExpandableCardModal>
 
             {/* Timeline Container */}
             <div className="relative max-w-[1200px] mx-auto">
