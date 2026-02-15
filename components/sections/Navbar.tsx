@@ -53,10 +53,10 @@ export function Navbar() {
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-white/10",
           isScrolled && "backdrop-blur-md shadow-sm",
         )}
-        // style={{
-        //   background:
-        //     "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
-        // }}
+        style={{
+          background:
+            "linear-gradient(to right, rgba(39, 86, 247) 0%, rgba(26, 61, 184, 0.12) 40%, transparent 75%)",
+        }}
       >
         <div className="px-4 py-2 sm:px-8 lg:px-20">
           <div className="flex items-center justify-between h-16">
@@ -68,12 +68,20 @@ export function Navbar() {
                 aria-label="Accelerate Skills Lab"
               >
                 <div className="relative w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center">
+                  {/* Radial glow behind logo */}
+                  <div
+                    className="absolute inset-0 -m-3 rounded-full pointer-events-none"
+                    // style={{
+                    //   background:
+                    //     "radial-gradient(circle, rgba(39, 86, 247, 0.45) 0%, rgba(26, 61, 184, 0.15) 50%, transparent 75%)",
+                    // }}
+                  />
                   <Image
-                    src="/asl_logo.svg"
+                    src="/asl_logo2.svg"
                     alt=""
                     width={40}
                     height={40}
-                    className="object-contain w-full h-full "
+                    className="relative object-contain w-full h-full"
                     priority
                   />
                 </div>
