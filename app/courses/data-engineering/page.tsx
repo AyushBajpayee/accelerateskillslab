@@ -238,15 +238,16 @@ function ScreenShareMockup() {
             </span>
           </div>
 
-          {/* Screen Share Content */}
+          {/* Screen Share Content — full image visible, no crop */}
           <div className="p-3">
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-[#1e1e2e] border border-slate-700/50">
-              {/* Course Roadmap Image */}
+            <div className="relative rounded-lg overflow-hidden bg-[#1e1e2e] border border-slate-700/50">
+              {/* Course Roadmap Image: intrinsic aspect, whole image visible */}
               <Image
-                src="/courses/data-engineering/de_eng_hero.png"
+                src="/courses/data-engineering/data_eng_hero.png"
                 alt="Data Engineering Roadmap: From Zero to Hero in 20 Weeks"
-                fill
-                className="object-cover"
+                width={1200}
+                height={900}
+                className="w-full h-auto object-contain"
               />
 
               {/* Screen share indicator */}
