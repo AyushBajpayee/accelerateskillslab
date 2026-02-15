@@ -29,10 +29,10 @@ import { TiltedToolCard } from "@/components/ui/TiltedToolCard";
 import {
   SiPython,
   SiPostgresql,
-  SiPandas,
-  SiNumpy,
   SiDocker,
   SiApacheairflow,
+  SiApachespark,
+  SiApachekafka,
   SiDbt,
   SiAirbyte,
   SiAmazonwebservices,
@@ -55,8 +55,8 @@ import {
 const tools: { name: string; icon: IconType }[] = [
   { name: "Python", icon: SiPython },
   { name: "PostgreSQL", icon: SiPostgresql },
-  { name: "Pandas", icon: SiPandas },
-  { name: "NumPy", icon: SiNumpy },
+  { name: "Apache Spark", icon: SiApachespark },
+  { name: "Kafka", icon: SiApachekafka },
   { name: "Docker", icon: SiDocker },
   { name: "Apache Airflow", icon: SiApacheairflow },
   { name: "dbt", icon: SiDbt },
@@ -130,7 +130,7 @@ const course = {
 
 const modules = [
   {
-    week: "Week 1-4",
+    week: "Week 1-2",
     title: "Python for Data Engineering",
     description:
       "Build the essential Python foundation needed for data engineering - from basics to advanced data manipulation and pipeline building.",
@@ -145,7 +145,7 @@ const modules = [
     ],
   },
   {
-    week: "Week 5-7",
+    week: "Week 3-4",
     title: "SQL & Database Fundamentals",
     description:
       "Master the universal language for data access and manipulation with PostgreSQL, from basics to advanced analytical functions.",
@@ -160,7 +160,7 @@ const modules = [
     ],
   },
   {
-    week: "Week 8-11",
+    week: "Week 5-9",
     title: "Data Engineering & ELT Tools",
     description:
       "Learn industry-standard tools for building production data pipelines: Airflow for orchestration, dbt for transformations, and modern data stack integration.",
@@ -175,7 +175,7 @@ const modules = [
     ],
   },
   {
-    week: "Week 12-15",
+    week: "Week 10-12",
     title: "Cloud & AWS for Data Engineering",
     description:
       "Deploy production-grade data infrastructure on AWS - from storage and compute to data lakes, analytics services, and pipeline architecture.",
@@ -190,7 +190,7 @@ const modules = [
     ],
   },
   {
-    week: "Week 16-20",
+    week: "Week 13-17",
     title: "Capstone Project - Complete Data Platform",
     description:
       "Build a production-ready data platform from scratch: design architecture, implement ingestion, transformation, orchestration, and analytics on AWS.",
@@ -206,13 +206,13 @@ const modules = [
   },
 ];
 
-// Module images mapping
+// Module images mapping (keys must match module.week) — from public/courses/data-engineering
 const moduleImages: Record<string, string> = {
-  "Week 1-4": "/courses/data-engineering/week1_4.png",
-  "Week 5-7": "/courses/data-engineering/week5_7.png",
-  "Week 8-11": "/courses/data-engineering/week8_11.png",
-  "Week 12-15": "/courses/data-engineering/week12_15.png",
-  "Week 16-20": "/courses/data-engineering/week16_20.png",
+  "Week 1-2": "/courses/data-engineering/de_week1_2.png",
+  "Week 3-4": "/courses/data-engineering/de_week3_4.png",
+  "Week 5-9": "/courses/data-engineering/de_week5_9.png",
+  "Week 10-12": "/courses/data-engineering/de_week10_12.png",
+  "Week 13-17": "/courses/data-engineering/de_week_13_17.png",
 };
 
 function ScreenShareMockup() {
@@ -243,7 +243,7 @@ function ScreenShareMockup() {
             <div className="relative aspect-video rounded-lg overflow-hidden bg-[#1e1e2e] border border-slate-700/50">
               {/* Course Roadmap Image */}
               <Image
-                src="/courses/data-engineering/data-eng-hero.png"
+                src="/courses/data-engineering/de_eng_hero.png"
                 alt="Data Engineering Roadmap: From Zero to Hero in 20 Weeks"
                 fill
                 className="object-cover"
@@ -578,7 +578,7 @@ export default function DataEngineeringPage() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                   </span>
-                  3-Months Data Engineering Bootcamp
+                  4-Months Data Engineering Bootcamp
                 </div>
 
                 <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6 leading-[1.1]">
@@ -590,7 +590,7 @@ export default function DataEngineeringPage() {
                 </h1>
 
                 <p className="text-sm sm:text-base text-muted-foreground mb-4 leading-relaxed max-w-lg">
-                  This intensive 3-month program transforms absolute beginners
+                  This intensive 4-months program transforms absolute beginners
                   into job-ready data engineers through hands-on projects and
                   industry-relevant skills. Master Python, SQL, Airflow, dbt,
                   AWS, and build production-grade data pipelines.

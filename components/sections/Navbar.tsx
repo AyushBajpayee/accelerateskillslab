@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Volume2, VolumeX } from "lucide-react";
+import { Volume2, VolumeX, Mail } from "lucide-react";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { cn } from "@/lib/utils";
 
@@ -55,7 +55,7 @@ export function Navbar() {
         )}
         style={{
           background:
-            "linear-gradient(to right, rgba(39, 86, 247) 0%, rgba(26, 61, 184, 0.12) 40%, transparent 75%)",
+            "linear-gradient(to right, rgba(39, 86, 247) 0%, rgba(26, 61, 184, 0.20) 40%, var(--background) 75%)",
         }}
       >
         <div className="px-4 py-2 sm:px-8 lg:px-20">
@@ -85,7 +85,7 @@ export function Navbar() {
                     priority
                   />
                 </div>
-                <span className="hidden sm:inline text-lg sm:text-xl font-bold text-white leading-tight align-middle">
+                <span className="inline text-lg sm:text-xl font-bold text-white leading-tight align-middle">
                   ccelerate Skills Lab
                 </span>
               </Link>
@@ -93,17 +93,25 @@ export function Navbar() {
 
             {/* Right Side - Button */}
             <div className="flex items-center">
-              <Link href={`${pathname}#contact`} className="inline-block">
+              <Link
+                href={`${pathname}#contact`}
+                className="inline-block"
+                aria-label="Contact Us"
+              >
                 <HoverBorderGradient
-                  containerClassName="rounded-full hover:border-primary transition-colors duration-200"
+                  containerClassName="rounded-full hover:border-primary transition-colors duration-200 inline-flex"
                   as="div"
-                  className="px-5 py-2.5 sm:px-7 text-sm font-medium dark:bg-black bg-white text-black dark:text-white flex items-center justify-center"
+                  className="w-11 h-11 mobile-m:w-auto mobile-m:h-auto p-0 mobile-m:px-5 mobile-m:py-2.5 sm:px-7 text-sm font-medium dark:bg-black bg-white text-black dark:text-white flex items-center justify-center shrink-0"
                   innerStyle={{
                     background:
                       "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
                   }}
                 >
-                  Contact Us
+                  <Mail
+                    className="w-5 h-5 shrink-0 mobile-m:hidden"
+                    aria-hidden
+                  />
+                  <span className="hidden mobile-m:inline">Contact Us</span>
                 </HoverBorderGradient>
               </Link>
             </div>

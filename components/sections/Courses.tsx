@@ -7,6 +7,19 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 const courses = [
   {
+    id: "data-engineering",
+    category: "Program",
+    categoryColor: "bg-primary",
+    categoryTextColor: "text-primary",
+    categoryIcon: Code,
+    title: "Data Engineering Zero to Hero",
+    description:
+      "This intensive 3-month program transforms absolute beginners into job-ready data engineers through hands-on projects and industry-relevant skills. Master Python, SQL, Airflow, dbt, AWS, and build production-grade data pipelines.",
+    buttonText: "Learn More",
+    buttonColor: "bg-orange-500 hover:bg-orange-600",
+    link: "/courses/data-engineering",
+  },
+  {
     id: "data-analytics",
     category: "Program",
     categoryColor: "bg-primary",
@@ -18,20 +31,6 @@ const courses = [
     buttonText: "Learn More",
     buttonColor: "bg-green-500 hover:bg-green-600",
     link: "/courses/data-analytics",
-  },
-  {
-    id: "data-engineering",
-    category: "Program",
-    categoryColor: "bg-primary",
-    categoryTextColor: "text-primary",
-    categoryIcon: Code,
-    title: "Data Engineering Zero to Hero",
-    description:
-      "This intensive 3-month program transforms absolute beginners into job-ready data engineers through hands-on projects and industry-relevant skills. Master Python, SQL, Airflow, dbt, AWS, and build production-grade data pipelines.",
-    buttonText: "Learn More",
-    buttonColor: "bg-orange-500 hover:bg-orange-600",
-
-    link: "/courses/data-engineering",
   },
 ];
 
