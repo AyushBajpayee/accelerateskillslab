@@ -15,11 +15,6 @@ import {
   Database,
   Table,
   Expand,
-  MessageSquare,
-  Mic,
-  Video,
-  ScreenShare,
-  Settings,
 } from "lucide-react";
 import Image from "next/image";
 import { Contact } from "@/components/sections/Contact";
@@ -268,86 +263,6 @@ const moduleImages: Record<string, string> = {
   "Week 7-8": "/courses/data-analytics/da_week7_8.png",
   "Week 9-12": "/courses/data-analytics/da_week9_12.png",
 };
-
-function ScreenShareMockup() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      className="relative w-full mx-auto lg:mx-0"
-    >
-      {/* Main container with gradient border */}
-      <div className="rounded-2xl bg-linear-to-br from-slate-800 to-slate-900 p-1 shadow-2xl">
-        <div className="rounded-xl bg-slate-900 overflow-hidden">
-          {/* Header */}
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-700/50">
-            <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-red-500" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500" />
-              <div className="w-3 h-3 rounded-full bg-green-500" />
-            </div>
-            <span className="text-xs text-slate-400 ml-2">
-              Data Analytics Bootcamp - Live Session
-            </span>
-          </div>
-
-          {/* Screen Share Content */}
-          <div className="p-3">
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-[#1e1e2e] border border-slate-700/50">
-              {/* Course Roadmap Image */}
-              <Image
-                src="/courses/data-analytics/data_analytics_hero.png"
-                alt="Data Analytics: The 3-Month Journey from Zero to Hero"
-                fill
-                className="object-cover"
-              />
-
-              {/* Screen share indicator */}
-              <div className="absolute top-2 right-2 flex items-center gap-1.5 px-2 py-1 bg-red-500/90 rounded text-[10px] text-white">
-                <ScreenShare size={10} />
-                <span>Sharing</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom bar */}
-          <div className="px-4 py-3 border-t border-slate-700/50 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-              </span>
-              <span className="text-xs text-slate-400">
-                Instructor Sharing Screen
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
-                <MessageSquare size={14} />
-              </button>
-              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
-                <Mic size={14} />
-              </button>
-              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
-                <Video size={14} />
-              </button>
-              <button className="p-1.5 rounded-lg bg-red-500/80 text-white hover:bg-red-500 transition-colors">
-                <ScreenShare size={14} />
-              </button>
-              <button className="p-1.5 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-700 transition-colors">
-                <Settings size={14} />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Decorative glow */}
-      <div className="absolute -inset-4 bg-primary/10 rounded-3xl blur-3xl -z-10" />
-    </motion.div>
-  );
-}
 
 function ExpandedModuleCard({
   module,
@@ -673,9 +588,32 @@ export default function DataAnalyticsPage() {
                 </motion.div>
               </motion.div>
 
-              {/* Screen Share Mockup - Right side */}
+              {/* Hero image card - Right side (Contact-style outer/inner card) */}
               <div className="flex-1 lg:flex-[1.5] flex justify-start lg:min-w-0">
-                <ScreenShareMockup />
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="relative w-full mx-auto lg:mx-0 p-3 sm:p-4 md:p-5 lg:p-6 rounded-3xl md:rounded-[32px] border border-[#ffffff12] bg-[#0d1117] overflow-visible"
+                >
+                  <div
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[2px] rounded-full"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, transparent, #2756f7, transparent)",
+                      boxShadow: "0 0 40px 10px rgba(39, 86, 247, 0.3)",
+                    }}
+                  />
+                  <div className="bg-[#111827] rounded-xl md:rounded-2xl border border-white/5 overflow-hidden">
+                    <Image
+                      src="/courses/data-analytics/data_analytics_hero.png"
+                      alt="Data Analytics: The 3-Month Journey from Zero to Hero"
+                      width={1200}
+                      height={900}
+                      className="w-full h-auto object-contain"
+                    />
+                  </div>
+                </motion.div>
               </div>
             </div>
           </div>
