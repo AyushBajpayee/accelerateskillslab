@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Phone, Mail, Linkedin } from "lucide-react";
+import { Phone, Mail, MapPin, Linkedin } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 
 const WATERMARK_TEXT = "AccelerateSkillsLab";
@@ -61,7 +61,7 @@ export function Footer() {
         </div>
 
         {/* Navigation Columns */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 lg:gap-12 mb-16 lg:mb-28">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-12 mb-16 lg:mb-28">
           {/* Programs Column */}
           <div>
             <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
@@ -169,6 +169,16 @@ export function Footer() {
                 />
                 <span>asl@accelerateskillslab.in</span>
               </a>
+              <div className="flex items-start gap-2 text-white/70 text-sm group">
+                <MapPin
+                  size={16}
+                  className="shrink-0 mt-0.5 group-hover:scale-110 transition-transform"
+                />
+                <span>
+                  Unit 7, 15th Floor Aurora Waterfront, C Block, Salt Lake,
+                  Sector V, Kolkata - 700091
+                </span>
+              </div>
               {/* <div className="flex items-center gap-3 ">
                 <a
                   href="https://www.linkedin.com/company/accelerate-skills-lab/about/"

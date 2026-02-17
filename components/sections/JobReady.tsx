@@ -388,7 +388,7 @@ export function JobReady() {
           transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
           className="text-base sm:text-lg lg:text-xl text-muted-foreground text-center mb-14 lg:mb-20 max-w-3xl mx-auto"
         >
-          ASL's Precision-Led Upskilling for the Modern Data Economy .
+          ASL's Precision-Led Upskilling for the Modern Data Economy.
         </motion.p>
 
         {/* Expanded Card Modal */}
