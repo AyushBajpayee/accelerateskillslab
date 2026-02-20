@@ -190,6 +190,56 @@
   scrollbar-width: none;
 }
 
+/* Navbar gradient: blue extends further on small screens, steps down at mobile-m, mobile-l, sm, lg */
+.navbar-gradient {
+  background: linear-gradient(
+    to right,
+    rgba(71, 202, 255) 5%,
+    rgba(26, 61, 184) 70%,
+    var(--background) 100%
+  );
+}
+@media (min-width: 375px) {
+  .navbar-gradient {
+    background: linear-gradient(
+      to right,
+      rgba(71, 202, 255) 5%,
+      rgba(26, 61, 184) 62%,
+      var(--background) 90%
+    );
+  }
+}
+@media (min-width: 425px) {
+  .navbar-gradient {
+    background: linear-gradient(
+      to right,
+      rgba(71, 202, 255) 5%,
+      rgba(26, 61, 184) 56%,
+      var(--background) 85%
+    );
+  }
+}
+@media (min-width: 640px) {
+  .navbar-gradient {
+    background: linear-gradient(
+      to right,
+      rgba(71, 202, 255) 2%,
+      rgba(26, 61, 184) 50%,
+      var(--background) 75%
+    );
+  }
+}
+@media (min-width: 1024px) {
+  .navbar-gradient {
+    background: linear-gradient(
+      to right,
+      rgba(71, 202, 255) 0%,
+      rgba(26, 61, 184) 30%,
+      var(--background) 75%
+    );
+  }
+}
+
 /* Aceternity Spotlight Animation Keyframes */
 @keyframes spotlight {
   0% {

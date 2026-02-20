@@ -8,10 +8,13 @@ import { Volume2, VolumeX, Mail } from "lucide-react";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { cn } from "@/lib/utils";
 
+const MOBILE_L_PX = 425;
+
 export function Navbar() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isPlaying, setIsPlaying] = React.useState(false);
+  const [isMobileLOrWider, setIsMobileLOrWider] = React.useState(false);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
   React.useEffect(() => {
@@ -20,6 +23,13 @@ export function Navbar() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  React.useEffect(() => {
+    const check = () => setIsMobileLOrWider(window.innerWidth >= MOBILE_L_PX);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
 
   React.useEffect(() => {
@@ -50,13 +60,9 @@ export function Navbar() {
     <>
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-white/10",
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-white/10 navbar-gradient",
           isScrolled && "backdrop-blur-md shadow-sm",
         )}
-        style={{
-          background:
-            "linear-gradient(to right, rgba(39, 86, 247) 0%, rgba(26, 61, 184, 0.20) 40%, var(--background) 75%)",
-        }}
       >
         <div className="px-4 py-2 sm:px-8 lg:px-20">
           <div className="flex items-center justify-between h-16">
@@ -64,28 +70,21 @@ export function Navbar() {
             <div className="shrink-0 flex items-center">
               <Link
                 href="/"
-                className="flex items-center gap-0 sm:gap-0.5"
+                className="flex items-center"
                 aria-label="Accelerate Skills Lab"
               >
                 <div className="relative w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center">
-                  {/* Radial glow behind logo */}
-                  <div
-                    className="absolute inset-0 -m-3 rounded-full pointer-events-none"
-                    // style={{
-                    //   background:
-                    //     "radial-gradient(circle, rgba(39, 86, 247, 0.45) 0%, rgba(26, 61, 184, 0.15) 50%, transparent 75%)",
-                    // }}
-                  />
+                  <div className="absolute inset-0 -m-3 rounded-full pointer-events-none" />
                   <Image
                     src="/asl_logo2.svg"
                     alt=""
                     width={40}
                     height={40}
-                    className="relative object-contain w-full h-full"
+                    className="relative object-contain object-center w-full h-full"
                     priority
                   />
                 </div>
-                <span className="inline text-lg sm:text-xl font-bold text-white leading-tight align-middle">
+                <span className="inline text-lg sm:text-[1.325rem] font-bold text-[#00265f] leading-none mt-3">
                   ccelerate Skills Lab
                 </span>
               </Link>
@@ -101,17 +100,21 @@ export function Navbar() {
                 <HoverBorderGradient
                   containerClassName="rounded-full hover:border-primary transition-colors duration-200 inline-flex"
                   as="div"
-                  className="w-11 h-11 mobile-m:w-auto mobile-m:h-auto p-0 mobile-m:px-5 mobile-m:py-2.5 sm:px-7 text-sm font-medium dark:bg-black bg-white text-black dark:text-white flex items-center justify-center shrink-0"
-                  innerStyle={{
-                    background:
-                      "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
-                  }}
+                  className="w-9 h-9 mobile-l:w-auto mobile-l:h-auto p-0 mobile-l:px-5 mobile-l:py-2.5 sm:px-7 text-sm font-medium dark:bg-black bg-white text-black dark:text-white flex items-center justify-center shrink-0"
+                  innerStyle={
+                    isMobileLOrWider
+                      ? {
+                          background:
+                            "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
+                        }
+                      : undefined
+                  }
                 >
                   <Mail
-                    className="w-5 h-5 shrink-0 mobile-m:hidden"
+                    className="w-4 h-4 sm:w-5 sm:h-5  shrink-0 mobile-l:hidden"
                     aria-hidden
                   />
-                  <span className="hidden mobile-m:inline">Contact Us</span>
+                  <span className="hidden mobile-l:inline">Contact Us</span>
                 </HoverBorderGradient>
               </Link>
             </div>
