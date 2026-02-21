@@ -127,12 +127,12 @@ export function Hero() {
       {/* Layered Aceternity Backgrounds */}
       <Spotlight
         className="-top-40 left-0 md:-top-20 md:left-60"
-        fill="#2756f7"
+        fill="#47CAFF"
       />
       <BackgroundBeams className="opacity-60" />
 
       {/* Sun Lamp Effect - positioned at bottom center */}
-      <LampEffect className="opacity-80" fill="#2756f7" position="bottom" />
+      <LampEffect className="opacity-80" fill="#47CAFF" position="bottom" />
 
       <div className="container mx-auto px-4 sm:px-8 lg:px-20 relative z-10">
         {/* Two column layout - reversed on mobile so video appears first */}
@@ -149,20 +149,24 @@ export function Hero() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
               </span>
-              3-Month Intensive Bootcamps
+              3-4 Months Intensive Bootcamps
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6 leading-[1.1]">
-              Learn <span className="text-primary">Live<span className="sm:hidden">,</span><span className="hidden sm:inline">.</span></span>
-              <br className="hidden sm:block" />{" "}
-              Build <span className="text-primary">Real.</span>
+              Learn{" "}
+              <span className="text-primary">
+                Live<span className="sm:hidden">,</span>
+                <span className="hidden sm:inline">.</span>
+              </span>
+              <br className="hidden sm:block" /> Build{" "}
+              <span className="text-primary">Real.</span>
               <br />
               Get <span className="text-primary">Job-Ready.</span>
             </h1>
 
             <p className="text-sm sm:text-base  text-muted-foreground mb-4 leading-relaxed max-w-lg">
               Live, instructor-led bootcamps - not pre-recorded videos. Go from
-              beginner to job-ready in 3 months with hands-on projects,
+              beginner to job-ready in 3-4 months with hands-on projects,
               mentorship, and placement support. Master dashboards and
               visualization tools, or build production-grade pipelines and cloud
               infrastructure.
@@ -181,7 +185,7 @@ export function Hero() {
                 className="px-5 py-2.5 sm:px-7 text-sm font-medium text-white flex items-center space-x-2"
                 innerStyle={{
                   background:
-                    "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
+                    "radial-gradient(circle at center, #47CAFF 0%, #2756f7 45%, #0f2568 100%)",
                 }}
               >
                 <span>Explore Programs</span>

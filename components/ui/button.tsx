@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "rounded-[30px] bg-gradient-to-b from-[#2756f7] to-[#4a74ff] border border-white/25 text-white hover:from-[#3a66ff] hover:to-[#5a84ff] shadow-md hover:shadow-lg",
+        default: "rounded-[30px] bg-gradient-to-b from-[#2756f7] to-[#4a74ff] border border-white/25 text-white hover:from-[#47CAFF] hover:to-[#2756f7] shadow-md hover:shadow-lg",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 rounded-md",
         outline:

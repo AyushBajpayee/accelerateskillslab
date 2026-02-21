@@ -42,26 +42,39 @@ export function Footer() {
   return (
     <footer
       className="relative overflow-hidden border-t border-white/10"
-      //   style={{
-      //     background:
-      //       "linear-gradient(180deg, #0d1117 0%, #0a0e14 100%)",
-      //   }}
+      style={{
+        background:
+          "linear-gradient(to bottom, rgba(71, 202, 255) 0%, rgba(26, 61, 184) 30%, var(--background) 95%)",
+      }}
     >
-      <div className="container mx-auto px-4 sm:px-8 lg:px-20 py-16 relative z-10">
+      <div className="container mx-auto px-4 sm:px-8 lg:px-20 py-6 sm:py-8 relative z-10">
         {/* Top Section - Brand & Tagline */}
-        <div className="mb-12">
-          <Link href="/" className="inline-block mb-4">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white">
-              Accelerate Skills Lab
-            </h2>
+        <div className="flex flex-col mb-12">
+          <Link href="/" className="inline-block">
+            <div className="flex items-baseline">
+              <div className="relative w-9 sm:w-10 h-9 sm:h-10 shrink-0 flex items-end justify-center">
+                <div className="absolute inset-0 -m-3 rounded-full pointer-events-none" />
+                <Image
+                  src="/asl_logo2.svg"
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="relative object-contain object-bottom w-full h-full"
+                  priority
+                />
+              </div>
+              <span className="inline text-lg sm:text-[1.325rem] font-bold text-[#00265f] leading-none">
+                ccelerate Skills Lab
+              </span>
+            </div>
           </Link>
-          <p className="text-white/80 text-base sm:text-lg max-w-2xl">
+          <p className="text-white/80 text-sm md:text-base max-w-2xl ml-1.5">
             Future of Learning.
           </p>
         </div>
 
         {/* Navigation Columns */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-12 mb-16 lg:mb-28">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-12 mb-6 sm:mb-12 md:mb-16 lg:mb-28">
           {/* Programs Column */}
           <div>
             <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
@@ -196,7 +209,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-white/10 pt-8">
+        <div className="border-t border-white/10 pt-8 pb-10 lg:pb-0">
           <div className="flex flex-col md:flex-row justify-end items-center gap-4">
             <div className=" text-white/60 text-sm">
               <p>

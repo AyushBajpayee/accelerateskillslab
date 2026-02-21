@@ -60,7 +60,7 @@ export const HoverBorderGradient = ({
     orderedDirections[(currentDirectionIndex + 1) % orderedDirections.length];
 
   const highlight =
-    "radial-gradient(75% 181.15942028985506% at 50% 50%, #2756f7 0%, rgba(255, 255, 255, 0) 100%)";
+    "radial-gradient(75% 181.15942028985506% at 50% 50%, #47CAFF 0%, rgba(255, 255, 255, 0) 100%)";
 
   return (
     <Component

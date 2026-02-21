@@ -60,8 +60,8 @@ export function HonestSection() {
             className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[2px] rounded-full"
             style={{
               background:
-                "linear-gradient(90deg, transparent, #2756f7, transparent)",
-              boxShadow: "0 0 40px 10px rgba(39, 86, 247, 0.3)",
+                "linear-gradient(90deg, transparent, #47CAFF, #2756f7, #47CAFF, transparent)",
+              boxShadow: "0 0 40px 10px rgba(71, 202, 255, 0.3)",
             }}
           />
 
