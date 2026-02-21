@@ -127,12 +127,12 @@ export function Hero() {
       {/* Layered Aceternity Backgrounds */}
       <Spotlight
         className="-top-40 left-0 md:-top-20 md:left-60"
-        fill="#2756f7"
+        fill="#47CAFF"
       />
       <BackgroundBeams className="opacity-60" />
 
       {/* Sun Lamp Effect - positioned at bottom center */}
-      <LampEffect className="opacity-80" fill="#2756f7" position="bottom" />
+      <LampEffect className="opacity-80" fill="#47CAFF" position="bottom" />
 
       <div className="container mx-auto px-4 sm:px-8 lg:px-20 relative z-10">
         {/* Two column layout - reversed on mobile so video appears first */}
@@ -185,7 +185,7 @@ export function Hero() {
                 className="px-5 py-2.5 sm:px-7 text-sm font-medium text-white flex items-center space-x-2"
                 innerStyle={{
                   background:
-                    "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
+                    "radial-gradient(circle at center, #47CAFF 0%, #2756f7 45%, #0f2568 100%)",
                 }}
               >
                 <span>Explore Programs</span>

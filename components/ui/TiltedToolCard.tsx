@@ -79,7 +79,7 @@ export function TiltedToolCard({
             className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[0.5px] rounded-full"
             style={{
               background:
-                "linear-gradient(90deg, transparent, #2756f7, transparent)",
+                "linear-gradient(90deg, transparent, #47CAFF, #2756f7, #47CAFF, transparent)",
             }}
           />
 

@@ -1,10 +1,10 @@
 /* ===== MagicBento effects – Datalumina theme ===== */
 
 :root {
-  --bento-glow-rgb: 39, 86, 247;          /* #2756f7 Datalumina blue */
-  --bento-glow-primary: rgba(39, 86, 247, 1);
-  --bento-glow-soft: rgba(39, 86, 247, 0.2);
-  --bento-glow-border: rgba(39, 86, 247, 0.8);
+  --bento-glow-rgb: 71, 202, 255;          /* #47CAFF light cyan-blue */
+  --bento-glow-primary: rgba(71, 202, 255, 1);
+  --bento-glow-soft: rgba(71, 202, 255, 0.2);
+  --bento-glow-border: rgba(71, 202, 255, 0.8);
   --bento-border-color: rgba(255, 255, 255, 0.05);
   --bento-bg-dark: #111827;
 }
@@ -34,8 +34,8 @@
   padding: 6px;
   background: radial-gradient(
     var(--glow-radius) circle at var(--glow-x) var(--glow-y),
-    rgba(39, 86, 247, calc(var(--glow-intensity) * 0.8)) 0%,
-    rgba(39, 86, 247, calc(var(--glow-intensity) * 0.4)) 30%,
+    rgba(71, 202, 255, calc(var(--glow-intensity) * 0.8)) 0%,
+    rgba(71, 202, 255, calc(var(--glow-intensity) * 0.4)) 30%,
     transparent 60%
   );
   border-radius: inherit;
@@ -76,7 +76,7 @@
   left: -2px;
   right: -2px;
   bottom: -2px;
-  background: rgba(39, 86, 247, 0.2);
+  background: rgba(71, 202, 255, 0.2);
   border-radius: 50%;
   z-index: -1;
 }

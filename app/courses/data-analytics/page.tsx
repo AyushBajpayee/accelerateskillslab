@@ -525,12 +525,12 @@ export default function DataAnalyticsPage() {
           {/* Layered Aceternity Backgrounds */}
           <Spotlight
             className="-top-40 left-0 md:-top-20 md:left-60"
-            fill="#2756f7"
+            fill="#47CAFF"
           />
           <BackgroundBeams className="opacity-60" />
 
           {/* Sun Lamp Effect - positioned at bottom center */}
-          <LampEffect className="opacity-80" fill="#2756f7" position="bottom" />
+          <LampEffect className="opacity-80" fill="#47CAFF" position="bottom" />
 
           <div className="container mx-auto px-4 sm:px-8 lg:px-20 relative z-10">
             {/* Two column layout - reversed on mobile so video appears first */}
@@ -579,7 +579,7 @@ export default function DataAnalyticsPage() {
                     className="px-5 py-2.5 sm:px-7 text-sm font-medium text-white flex items-center space-x-2"
                     innerStyle={{
                       background:
-                        "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
+                        "radial-gradient(circle at center, #47CAFF 0%, #2756f7 45%, #0f2568 100%)",
                     }}
                   >
                     <span>Curriculum</span>
@@ -600,8 +600,8 @@ export default function DataAnalyticsPage() {
                     className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[2px] rounded-full"
                     style={{
                       background:
-                        "linear-gradient(90deg, transparent, #2756f7, transparent)",
-                      boxShadow: "0 0 40px 10px rgba(39, 86, 247, 0.3)",
+                        "linear-gradient(90deg, transparent, #47CAFF, #2756f7, #47CAFF, transparent)",
+                      boxShadow: "0 0 40px 10px rgba(71, 202, 255, 0.3)",
                     }}
                   />
                   <div className="bg-[#111827] rounded-xl md:rounded-2xl border border-white/5 overflow-hidden">
@@ -667,7 +667,7 @@ export default function DataAnalyticsPage() {
                       className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[0.5px] rounded-full"
                       style={{
                         background:
-                          "linear-gradient(90deg, transparent, #2756f7, transparent)",
+                          "linear-gradient(90deg, transparent, #47CAFF, #2756f7, #47CAFF, transparent)",
                       }}
                     />
                     <div className="bg-[#111827] rounded-lg sm:rounded-xl p-3 mobile-m:p-4 sm:p-6 flex flex-col items-center gap-1 sm:gap-2 border border-blue-500/20 hover:border-blue-500/40 transition-colors h-full">
@@ -725,7 +725,7 @@ export default function DataAnalyticsPage() {
                   className="absolute bottom-0 left-[20%] -translate-x-1/2 w-[40%] h-[0.5px] rounded-full"
                   style={{
                     background:
-                      "linear-gradient(90deg, transparent, #2756f7, transparent)",
+                      "linear-gradient(90deg, transparent, #47CAFF, #2756f7, #47CAFF, transparent)",
                   }}
                 />
                 <div className="bg-[#111827] rounded-xl sm:rounded-2xl px-4 py-4 sm:p-6 lg:p-8 border border-blue-500/20">
@@ -828,7 +828,7 @@ export default function DataAnalyticsPage() {
                   className="absolute top-0 right-[20%] translate-x-1/2 w-[40%] h-[0.5px] rounded-full"
                   style={{
                     background:
-                      "linear-gradient(90deg, transparent, #2756f7, transparent)",
+                      "linear-gradient(90deg, transparent, #47CAFF, #2756f7, #47CAFF, transparent)",
                   }}
                 />
                 <div className="bg-[#111827] rounded-xl sm:rounded-2xl px-4 py-4 sm:p-6 lg:p-8 border border-blue-500/20">
@@ -1045,7 +1045,7 @@ export default function DataAnalyticsPage() {
                         className="absolute bottom-0 left-[20%] -translate-x-1/2 w-[40%] h-[0.5px] rounded-full"
                         style={{
                           background:
-                            "linear-gradient(90deg, transparent, #2756f7, transparent)",
+                            "linear-gradient(90deg, transparent, #47CAFF, #2756f7, #47CAFF, transparent)",
                         }}
                       />
 
@@ -1054,7 +1054,7 @@ export default function DataAnalyticsPage() {
                         className="absolute top-0 right-[20%] translate-x-1/2 w-[40%] h-[0.5px] rounded-full"
                         style={{
                           background:
-                            "linear-gradient(90deg, transparent, #2756f7, transparent)",
+                            "linear-gradient(90deg, transparent, #47CAFF, #2756f7, #47CAFF, transparent)",
                         }}
                       />
 

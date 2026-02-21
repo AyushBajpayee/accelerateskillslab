@@ -80,8 +80,8 @@ export function Courses() {
             className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[2px] rounded-full"
             style={{
               background:
-                "linear-gradient(90deg, transparent, #2756f7, transparent)",
-              boxShadow: "0 0 40px 10px rgba(39, 86, 247, 0.3)",
+                "linear-gradient(90deg, transparent, #47CAFF, #2756f7, #47CAFF, transparent)",
+              boxShadow: "0 0 40px 10px rgba(71, 202, 255, 0.3)",
             }}
           />
 
@@ -128,7 +128,7 @@ export function Courses() {
                       className="px-5 py-2 text-sm md:px-6 md:py-2.5 lg:py-3 md:text-base font-medium text-white flex items-center justify-center"
                       innerStyle={{
                         background:
-                          "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
+                          "radial-gradient(circle at center, #47CAFF 0%, #2756f7 45%, #0f2568 100%)",
                       }}
                     >
                       {course.buttonText}

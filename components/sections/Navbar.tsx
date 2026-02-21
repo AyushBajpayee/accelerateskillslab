@@ -105,7 +105,7 @@ export function Navbar() {
                     isMobileLOrWider
                       ? {
                           background:
-                            "radial-gradient(circle at center, #2756f7 0%, #1a3db8 50%, #0f2568 100%)",
+                            "radial-gradient(circle at center, #47CAFF 0%, #2756f7 45%, #0f2568 100%)",
                         }
                       : undefined
                   }
